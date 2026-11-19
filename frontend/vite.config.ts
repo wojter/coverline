@@ -3,6 +3,8 @@ import tailwindcss from '@tailwindcss/vite';
 import { VitePWA } from 'vite-plugin-pwa';
 import { defineConfig } from 'vitest/config';
 
+declare const process: { env: Record<string, string | undefined> };
+
 export default defineConfig({
   plugins: [
     preact(),
@@ -31,7 +33,7 @@ export default defineConfig({
   ],
   server: {
     proxy: {
-      '/api': 'http://127.0.0.1:8000',
+      '/api': `http://127.0.0.1:${process.env.API_PORT ?? 8000}`,
     },
   },
   test: {

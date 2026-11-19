@@ -3,6 +3,7 @@
 Run with `make dev-seed` while `make dev-api` is up. Refuses any host but localhost.
 """
 
+import argparse
 import json
 import random
 import sys
@@ -11,7 +12,7 @@ import urllib.request
 import uuid
 from datetime import date, timedelta
 
-API = "http://127.0.0.1:8000/api/sync"
+DEFAULT_API = "http://127.0.0.1:8000/api/sync"
 TODAY = date(2026, 11, 19)
 CYCLE_STARTS = [date(2026, 7, 30), date(2026, 8, 27), date(2026, 9, 25), date(2026, 10, 24)]
 EXCLUDED_CYCLE = 1  # the second cycle, illness
@@ -139,20 +140,23 @@ def temp_entries(rng, d, ovulation, day_date, source, offset, index):
     return [{"entity": "temp", "key": f"{day_date.isoformat()}/{source}", "set": entry}]
 
 
-def post(ops):
+def post(url, ops):
     body = json.dumps({"ops": ops}).encode()
-    request = urllib.request.Request(API, data=body, headers={"content-type": "application/json"})
+    request = urllib.request.Request(url, data=body, headers={"content-type": "application/json"})
     with urllib.request.urlopen(request, timeout=20) as response:
         return json.load(response)
 
 
 def main():
-    host = urllib.parse.urlparse(API).hostname
+    parser = argparse.ArgumentParser(description="Seed the dev API with demo data.")
+    parser.add_argument("--url", default=DEFAULT_API, help="sync endpoint of a running dev API")
+    args = parser.parse_args()
+    host = urllib.parse.urlparse(args.url).hostname
     if host not in ("127.0.0.1", "localhost"):
         sys.exit("refusing to seed a host other than localhost")
     rng = random.Random(20261119)
     ops = build_ops(rng)
-    result = post(ops)
+    result = post(args.url, ops)
     if result["rejected"]:
         sys.exit(f"{len(result['rejected'])} ops rejected, first: {result['rejected'][0]}")
     print(f"seeded {len(ops)} ops, version {result['version']}")
