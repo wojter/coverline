@@ -12,7 +12,7 @@
 4. No domain logic in the backend (D2). No hardcoded UI strings (S4.4). No `style="..."` strings (A8). Logs carry no field values (A8). No third-party requests.
 5. Temperatures are integer hundredths everywhere (DB, wire, IndexedDB, domain). Conversion happens only in `tempInput.ts` and the UI.
 6. A new architectural choice is appended to `docs/decisions.md` as `Dn` with status **proposed**, and the task stops for review.
-7. One commit per task: `<task id>: <summary>`.
+7. One commit per task, in Conventional Commits format (see Commits).
 8. UI tasks (1.3, U*): follow the style of the reference apps, never their features (D19).
 
 ## Commands
@@ -41,4 +41,9 @@ compose.yaml, Dockerfile
 
 ## Commits
 
-Format: `<task id>: <summary>`, for example `0.1: Repo scaffold`. One commit per task.
+Format: [Conventional Commits](https://www.conventionalcommits.org/): `<type>(<scope>): <summary>`, for example `feat(api): add op models per wire contract`. One commit per task.
+
+- Types: `feat`, `fix`, `docs`, `test`, `refactor`, `build`, `chore`.
+- Scope is the area of the code (`api`, `domain`, `i18n`, `data`, `web`, `ui`, `chart`, `dev`, ...); optional.
+- Summary is imperative, lower case, no trailing period.
+- The task id goes in the body as `Task: <task id>`.
