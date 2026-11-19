@@ -1,0 +1,230 @@
+{
+  "app": {
+    "name": "Coverline",
+    "notFound": "Nie znaleziono strony",
+    "placeholder": "Wkrótce, w następnym kroku."
+  },
+  "nav": {
+    "today": "Dziś",
+    "entry": "Wpis",
+    "chart": "Karta",
+    "calendar": "Kalendarz",
+    "stats": "Statystyki",
+    "settings": "Ustawienia"
+  },
+  "sync": {
+    "saved": "Zapisano lokalnie",
+    "synced": "Zsynchronizowano",
+    "now": "Synchronizuj teraz",
+    "queued": "{count} czeka na wysłanie",
+    "state": {
+      "notConnected": "Brak połączenia",
+      "idle": "Aktualne",
+      "syncing": "Synchronizacja…",
+      "offline": "Brak sieci, zapisane na tym urządzeniu",
+      "unauthorized": "Token nieprawidłowy lub wygasły",
+      "error": "Błąd synchronizacji, ponawiam"
+    }
+  },
+  "update": {
+    "available": "Dostępna aktualizacja",
+    "reload": "Odśwież"
+  },
+  "theme": {
+    "title": "Motyw",
+    "system": "Jak w urządzeniu",
+    "light": "Jasny",
+    "dark": "Ciemny"
+  },
+  "language": {
+    "title": "Język",
+    "en": "English",
+    "pl": "Polski"
+  },
+  "source": {
+    "defaultName": "Pomiar {n}"
+  },
+  "field": {
+    "cycleDay1": "1. dzień cyklu",
+    "temperature": "Temperatura",
+    "excludeReading": "Pomiń",
+    "disturbances": "Zakłócenia",
+    "bleeding": "Krwawienie",
+    "sensation": "Odczucie",
+    "mucusFeatures": "Wygląd śluzu",
+    "atypical": "Śluz/wydzielina nietypowa",
+    "mucusQuality": "Jakość śluzu",
+    "symptoms": "Objawy dodatkowe",
+    "intercourse": "Współżycie",
+    "chartNote": "Komentarz na karcie",
+    "markMucus": "Oznaczenie śluzu",
+    "markTemp": "Oznaczenie temperatury",
+    "notes": "Notatki",
+    "cycleStart": "Początek cyklu",
+    "cycleEnd": "Koniec cyklu",
+    "excludeFromStats": "Pomiń w statystykach",
+    "intention": "Poczęcie dziecka",
+    "firstMucusDay": "Dzień wystąpienia pierwszego śluzu",
+    "firstHfMucusDay": "Pierwszy dzień wystąpienia śluzu wysoce płodnego",
+    "coverline": "Linia pokrywająca",
+    "fertileDays": "Dni płodne",
+    "fertileStart": "Od",
+    "fertileEnd": "Do",
+    "prevCycleRise": "Wzrost temperatury w poprzednim cyklu",
+    "cycleNotes": "Notatki cyklu"
+  },
+  "computed": {
+    "cycleNo": "Cykl nr",
+    "cycleLength": "Długość cyklu",
+    "lastMenstruation": "Ostatni dzień miesiączki",
+    "shortestLongest": "Najkrótszy / najdłuższy z ostatnich {n}",
+    "shortestMinus21": "Najkrótszy cykl minus 21",
+    "shortestMinus20": "Najkrótszy cykl minus 20",
+    "mucusPeak": "Dzień szczytu objawu śluzu",
+    "mucusPeakPlus3": "Szczyt śluzu +3",
+    "thirdHighDay": "Trzeci dzień temperatury powyżej linii pokrywającej",
+    "lutealLength": "Długość fazy lutealnej",
+    "site": "Miejsce pomiaru",
+    "fromCycles": "z {count} cykli",
+    "cycleDayLabel": "DZIEŃ CYKLU",
+    "noCycle": "Brak bieżącego cyklu"
+  },
+  "codes": {
+    "bleeding": {
+      "staining": "Brudzenie",
+      "spotting": "Plamienie",
+      "light": "Słabe",
+      "medium": "Średnie",
+      "heavy": "Obfite"
+    },
+    "sensation": {
+      "dry": "Sucho",
+      "moist": "Wilgotno",
+      "wet": "Mokro / ślisko / naoliwione"
+    },
+    "mucus_feature": {
+      "cloudy": "Mętny",
+      "sticky": "Lepki, gęsty",
+      "clear": "Przejrzysty",
+      "stretchy": "Rozciągliwy"
+    },
+    "mucus_quality": {
+      "none": "Brak śluzu",
+      "less_fertile": "Mniej płodny",
+      "highly_fertile": "Wysoce płodny"
+    },
+    "symptom": {
+      "ovulation_pain": "Ból owulacyjny",
+      "breast_tension": "Napięcie w piersiach"
+    },
+    "disturbance": {
+      "alcohol": "Alkohol",
+      "short_sleep": "Krótki sen",
+      "late_measurement": "Późny pomiar",
+      "illness": "Choroba",
+      "stress": "Stres",
+      "travel": "Podróż"
+    },
+    "intercourse": {
+      "morning": "Rano",
+      "evening": "Wieczór"
+    },
+    "intention": {
+      "avoid": "Odkładane",
+      "conceive": "Planowane"
+    },
+    "site": {
+      "oral": "Usta",
+      "vaginal": "Pochwa",
+      "rectal": "Odbyt",
+      "finger": "Palec",
+      "wrist": "Nadgarstek",
+      "other": "Inne"
+    },
+    "marker": {
+      "circle": "Kółko",
+      "square": "Kwadrat",
+      "triangle": "Trójkąt",
+      "diamond": "Romb"
+    }
+  },
+  "mucusDefinition": {
+    "stretchy": {
+      "title": "Rozciągliwy",
+      "text": "Możliwy do rozciągnięcia w nitkę, elastyczny."
+    },
+    "clear": {
+      "title": "Przejrzysty",
+      "text": "Jak białko surowego jajka, szklisty."
+    },
+    "sticky": {
+      "title": "Lepki, gęsty",
+      "text": "Lepi się lub zrywa przy próbie rozciągania, kleisty."
+    },
+    "cloudy": {
+      "title": "Mętny",
+      "text": "Nieprzejrzysty, białawy, mleczny, żółtawy, czasem grudki, kłaczki."
+    }
+  },
+  "chart": {
+    "date": "Data",
+    "temperature": "Temperatura",
+    "cycleDay": "Dzień cyklu",
+    "bleeding": "Krwawienie",
+    "mucusPeak": "Szczyt śluzu",
+    "atypical": "Śluz/wydzielina nietypowa",
+    "symptoms": "Objawy dodatkowe",
+    "fertileDays": "Dni płodne",
+    "intercourse": "Współżycie",
+    "disturbances": "Zakłócenia"
+  },
+  "day1": {
+    "askBody": "Ten dzień jest w cyklu rozpoczętym {start}. Przesunąć ten początek tutaj, czy rozpocząć nowy cykl?",
+    "moveHere": "Przesuń początek tutaj",
+    "newCycle": "Rozpocznij nowy cykl",
+    "moveToOther": "Przesuń początek na inny dzień",
+    "removeStart": "Usuń początek cyklu",
+    "neighbour": "Początek nie może przesunąć się na początek innego cyklu ani za niego.",
+    "afterEnd": "Początek nie może być po dacie końca cyklu."
+  },
+  "warning": {
+    "duplicate": "{mark} jest zaznaczone w więcej niż jednym dniu tego cyklu. Używany jest najwcześniejszy dzień.",
+    "order": "Oznaczenia na tej linii nie są w kolejności dat.",
+    "outside": "{field} wypada poza tym cyklem."
+  },
+  "settings": {
+    "title": "Ustawienia",
+    "connection": {
+      "title": "Połączenie",
+      "hint": "Wklej <client_id>:<client_secret> z tokenu urządzenia.",
+      "placeholder": "client_id:client_secret",
+      "connect": "Połącz",
+      "disconnect": "Rozłącz",
+      "invalid": "Token musi mieć postać <client_id>:<client_secret>.",
+      "rejected": "Serwer odrzucił ten token. Sprawdź, czy jest aktualny.",
+      "connectedAs": "Połączono jako {device}",
+      "tokenEnding": "Token ••••{last}",
+      "notConnected": "Brak połączenia. Aplikacja działa offline."
+    },
+    "storage": {
+      "title": "Pamięć",
+      "persisted": "Chroniona przed automatycznym czyszczeniem",
+      "notPersisted": "Przeglądarka może wyczyścić te dane"
+    }
+  },
+  "csv": {
+    "date": "Data",
+    "cycleNumber": "Cykl nr",
+    "cycleDay": "Dzień cyklu",
+    "temperature": "Temperatura",
+    "excluded": "Pominięty",
+    "mark": "Oznaczenie",
+    "bleeding": "Krwawienie",
+    "sensation": "Odczucie",
+    "atypical": "Śluz/wydzielina nietypowa",
+    "mucusQuality": "Jakość śluzu",
+    "mucusMark": "Oznaczenie śluzu",
+    "chartNote": "Komentarz na karcie",
+    "notes": "Notatki"
+  }
+}

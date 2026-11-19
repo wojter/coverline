@@ -1,0 +1,230 @@
+{
+  "app": {
+    "name": "Coverline",
+    "notFound": "Page not found",
+    "placeholder": "Coming in the next step."
+  },
+  "nav": {
+    "today": "Today",
+    "entry": "Entry",
+    "chart": "Chart",
+    "calendar": "Calendar",
+    "stats": "Stats",
+    "settings": "Settings"
+  },
+  "sync": {
+    "saved": "Saved locally",
+    "synced": "Synced",
+    "now": "Sync now",
+    "queued": "{count} waiting to sync",
+    "state": {
+      "notConnected": "Not connected",
+      "idle": "Up to date",
+      "syncing": "Syncing…",
+      "offline": "Offline, saved on this device",
+      "unauthorized": "Token invalid or expired",
+      "error": "Sync failed, retrying"
+    }
+  },
+  "update": {
+    "available": "Update available",
+    "reload": "Reload"
+  },
+  "theme": {
+    "title": "Theme",
+    "system": "System",
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "language": {
+    "title": "Language",
+    "en": "English",
+    "pl": "Polski"
+  },
+  "source": {
+    "defaultName": "Measurement {n}"
+  },
+  "field": {
+    "cycleDay1": "Cycle day 1",
+    "temperature": "Temperature",
+    "excludeReading": "Exclude",
+    "disturbances": "Disturbances",
+    "bleeding": "Bleeding",
+    "sensation": "Sensation",
+    "mucusFeatures": "Mucus appearance",
+    "atypical": "Atypical discharge",
+    "mucusQuality": "Mucus quality",
+    "symptoms": "Additional symptoms",
+    "intercourse": "Intercourse",
+    "chartNote": "Chart comment",
+    "markMucus": "Mucus mark",
+    "markTemp": "Temperature mark",
+    "notes": "Notes",
+    "cycleStart": "Cycle start",
+    "cycleEnd": "Cycle end",
+    "excludeFromStats": "Exclude from stats",
+    "intention": "Conception",
+    "firstMucusDay": "First mucus day",
+    "firstHfMucusDay": "First highly fertile mucus day",
+    "coverline": "Coverline",
+    "fertileDays": "Fertile days",
+    "fertileStart": "From",
+    "fertileEnd": "To",
+    "prevCycleRise": "Temperature rise in previous cycle",
+    "cycleNotes": "Cycle notes"
+  },
+  "computed": {
+    "cycleNo": "Cycle no.",
+    "cycleLength": "Cycle length",
+    "lastMenstruation": "Last day of period",
+    "shortestLongest": "Shortest / longest of last {n}",
+    "shortestMinus21": "Shortest cycle minus 21",
+    "shortestMinus20": "Shortest cycle minus 20",
+    "mucusPeak": "Mucus peak day",
+    "mucusPeakPlus3": "Mucus peak +3",
+    "thirdHighDay": "Third high day",
+    "lutealLength": "Luteal phase length",
+    "site": "Measurement site",
+    "fromCycles": "from {count} cycles",
+    "cycleDayLabel": "CYCLE DAY",
+    "noCycle": "No current cycle"
+  },
+  "codes": {
+    "bleeding": {
+      "staining": "Brown staining",
+      "spotting": "Spotting",
+      "light": "Light",
+      "medium": "Medium",
+      "heavy": "Heavy"
+    },
+    "sensation": {
+      "dry": "Dry",
+      "moist": "Moist",
+      "wet": "Wet / slippery / oily"
+    },
+    "mucus_feature": {
+      "cloudy": "Cloudy",
+      "sticky": "Sticky, thick",
+      "clear": "Clear",
+      "stretchy": "Stretchy"
+    },
+    "mucus_quality": {
+      "none": "No mucus",
+      "less_fertile": "Less fertile",
+      "highly_fertile": "Highly fertile"
+    },
+    "symptom": {
+      "ovulation_pain": "Ovulation pain",
+      "breast_tension": "Breast tension"
+    },
+    "disturbance": {
+      "alcohol": "Alcohol",
+      "short_sleep": "Short sleep",
+      "late_measurement": "Late measurement",
+      "illness": "Illness",
+      "stress": "Stress",
+      "travel": "Travel"
+    },
+    "intercourse": {
+      "morning": "Morning",
+      "evening": "Evening"
+    },
+    "intention": {
+      "avoid": "Avoiding pregnancy",
+      "conceive": "Trying to conceive"
+    },
+    "site": {
+      "oral": "Oral",
+      "vaginal": "Vaginal",
+      "rectal": "Rectal",
+      "finger": "Finger",
+      "wrist": "Wrist",
+      "other": "Other"
+    },
+    "marker": {
+      "circle": "Circle",
+      "square": "Square",
+      "triangle": "Triangle",
+      "diamond": "Diamond"
+    }
+  },
+  "mucusDefinition": {
+    "stretchy": {
+      "title": "Stretchy",
+      "text": "Can be stretched into a thread, elastic."
+    },
+    "clear": {
+      "title": "Clear",
+      "text": "Like raw egg white, glassy."
+    },
+    "sticky": {
+      "title": "Sticky, thick",
+      "text": "Sticks or breaks when you try to stretch it, gluey."
+    },
+    "cloudy": {
+      "title": "Cloudy",
+      "text": "Not transparent: white, milky, yellowish, sometimes lumpy."
+    }
+  },
+  "chart": {
+    "date": "Date",
+    "temperature": "Temperature",
+    "cycleDay": "Cycle day",
+    "bleeding": "Bleeding",
+    "mucusPeak": "Mucus peak",
+    "atypical": "Atypical discharge",
+    "symptoms": "Additional symptoms",
+    "fertileDays": "Fertile days",
+    "intercourse": "Intercourse",
+    "disturbances": "Disturbances"
+  },
+  "day1": {
+    "askBody": "This day is inside the cycle that started {start}. Move that start here, or start a new cycle?",
+    "moveHere": "Move the start here",
+    "newCycle": "Start a new cycle",
+    "moveToOther": "Move the start to another day",
+    "removeStart": "Remove this cycle start",
+    "neighbour": "A start cannot move onto or past the start of another cycle.",
+    "afterEnd": "A start cannot move after the cycle's end date."
+  },
+  "warning": {
+    "duplicate": "{mark} is marked on more than one day in this cycle. The earliest day is used.",
+    "order": "The marks on this track are not in date order.",
+    "outside": "{field} falls outside this cycle."
+  },
+  "settings": {
+    "title": "Settings",
+    "connection": {
+      "title": "Connection",
+      "hint": "Paste <client_id>:<client_secret> from the device token.",
+      "placeholder": "client_id:client_secret",
+      "connect": "Connect",
+      "disconnect": "Disconnect",
+      "invalid": "The token must look like <client_id>:<client_secret>.",
+      "rejected": "The server rejected this token. Check that it is current.",
+      "connectedAs": "Connected as {device}",
+      "tokenEnding": "Token ••••{last}",
+      "notConnected": "Not connected. The app works offline."
+    },
+    "storage": {
+      "title": "Storage",
+      "persisted": "Protected from automatic cleanup",
+      "notPersisted": "Browser may clear this data"
+    }
+  },
+  "csv": {
+    "date": "Date",
+    "cycleNumber": "Cycle no.",
+    "cycleDay": "Cycle day",
+    "temperature": "Temperature",
+    "excluded": "Excluded",
+    "mark": "Mark",
+    "bleeding": "Bleeding",
+    "sensation": "Sensation",
+    "atypical": "Atypical discharge",
+    "mucusQuality": "Mucus quality",
+    "mucusMark": "Mucus mark",
+    "chartNote": "Chart comment",
+    "notes": "Notes"
+  }
+}
