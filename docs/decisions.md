@@ -153,3 +153,19 @@ Where the spec leaves room, it is read as follows:
 - **Not in the PoC:** predictions (next period, ovulation, estimated fertile window, confidence) and generated interpretation text. Mood and emoji are not taken over.
 - **Why:** the spec has no rules engine and interpretation is manual (spec 0). Showing estimates would contradict it.
 - **Deferred, not rejected:** the owner keeps the predictions from the screenshots for a later phase. Nothing is built for them now. Generated interpretation text is spec backlog item 5. Predictions are not in the spec backlog yet.
+
+## D20. Runtime configuration and API details
+
+- **Status:** proposed
+- **Decision:**
+  - Environment: `ENV` (`dev` or `prod`), `AUTH_MODE` (`cloudflare` or `dev`), `DEV_IDENTITY`, `CF_TEAM_DOMAIN` (`https://<team>.cloudflareaccess.com`, also the expected `iss`), `CF_ACCESS_AUD`, `ALLOWED_SERVICE_TOKENS`, `DATA_DIR` (database `coverline.db`, backups in `backup/`), `STATIC_DIR` (the built PWA).
+  - `POST /api/sync` takes `{"ops": [...]}`. `GET /api/health` returns the plain text `ok`.
+  - A `history.snapshot` is the old row in the wire format of architecture 5.1.
+  - The client syncs only when a token is set. In `AUTH_MODE=dev` the server ignores the token headers, so any `<id>:<secret>` connects a dev client.
+- **Why:** the architecture names these but leaves their exact form open. Wire-format snapshots can be restored with ordinary ops later (backlog 2).
+
+## D21. Spike gate deferred
+
+- **Status:** proposed
+- **Decision:** the app is built before spikes S1–S3 (plan 1.4) are run on the phones. The chart sizing constants are provisional until S3 is printed.
+- **Why:** the owner asked to see the whole app first. S1 and S2 need the deployed tunnel and both phones; their results may still change D4 or D1.

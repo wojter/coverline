@@ -23,7 +23,7 @@ build-web:
 
 dev-api:
 	mkdir -p data-dev
-	cd backend && ENV=dev AUTH_MODE=dev DEV_IDENTITY=dev DATA_DIR=$(CURDIR)/data-dev uv run uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+	cd backend && ENV=dev AUTH_MODE=dev DEV_IDENTITY=dev DATA_DIR=$(CURDIR)/data-dev uv run uvicorn app.main:create_app --factory --reload --host 127.0.0.1 --port 8000
 
 dev-web:
 	cd frontend && npm run dev
