@@ -171,6 +171,86 @@ An op is one change to one row, identified by `entity` and `key`. It either sets
 - The client enforces the cross-row rules: mark uniqueness per cycle and the cycle boundary rules of spec 2.5.
 - A change that touches several rows is sent as several ops in one request. Examples: moving a mark, or splitting a cycle that has an `end_date`.
 
+### 5.1 Wire format
+
+One JSON shape is used by `GET /data`, the IndexedDB `data` key and the test fixtures:
+
+```json
+{
+  "version":  "9f2c41d07a3e",
+  "sources":  { "1": { … }, "2": { … } },
+  "cycles":   { "<id>": { … } },
+  "days":     { "<YYYY-MM-DD>": { … } },
+  "temps":    { "<YYYY-MM-DD>/<1|2>": { … } },
+  "settings": { "<key>": <json value> }
+}
+```
+
+- Each map is keyed by the op key, so an op on entity `day` applies to `data.days[key]`, `temp` to `temps`, `cycle` to `cycles`, `source` to `sources`, `setting` to `settings`.
+- A row holds every field of its entity, `null` when empty. The key is not repeated inside the row. `updated_at` is server-only and not on the wire.
+- `version` is the `data_version` string. `GET /data` sends it as the quoted ETag `"<version>"`, and the client sends it back in `If-None-Match`.
+
+Value types:
+
+| Type | On the wire |
+|---|---|
+| date | string `YYYY-MM-DD` that is a real calendar date (`2026-02-29` and `2026-5-10` are invalid) |
+| temperature | JSON integer, hundredths of °C (`3645` = 36.45 °C) |
+| bool | JSON `true` / `false`, never `0` / `1` |
+| code | string from spec 2.4 |
+| code array | non-empty JSON array of codes in spec 2.4 order, no duplicates (`["cloudy", "clear"]`) |
+| mark | string: `"P"`, `"1"`, `"2"`, `"3"` for mucus, `"1"` to `"4"` for temperatures |
+| text | string |
+
+Rows (every field is nullable unless a default is given):
+
+| Entity, key | Field | Type and rule |
+|---|---|---|
+| `source`, `"1"` or `"2"` | `name` | text, not null. `""` shows the translated default (D15) |
+| | `site`, `marker` | code, not null |
+| | `color` | `#rrggbb`, lowercase hex, not null |
+| | `range_min`, `range_max` | temperature, not null, `range_min < range_max` |
+| `cycle`, lowercase UUID (`crypto.randomUUID()`) | `start_date` | date, not null, unique across cycles |
+| | `end_date` | date, `>= start_date` |
+| | `excluded_from_stats` | bool, not null, default `false` |
+| | `intention` | code |
+| | `first_mucus_day`, `first_hf_mucus_day` | date (may fall outside the cycle: F3 flags it) |
+| | `coverline_1`, `coverline_2` | temperature within the range of source 1 / 2 |
+| | `fertile_start`, `fertile_end` | date, `fertile_end >= fertile_start` when both are set |
+| | `prev_cycle_rise` | bool (`null` = use the computed value) |
+| | `notes` | text |
+| `day`, date | `bleeding`, `mucus_sensation`, `mucus_quality_override` | code |
+| | `mucus_features`, `symptoms`, `intercourse`, `disturbances` | code array |
+| | `mucus_atypical` | bool |
+| | `chart_note` | text, at most 30 Unicode code points (D17) |
+| | `mark_mucus` | mark `P`/`1`/`2`/`3` |
+| | `notes` | text |
+| `temp`, `<date>/<1\|2>` | `value` | temperature, not null, within the range of its source |
+| | `excluded` | bool, not null, default `false` |
+| | `mark` | mark `1`–`4`, must be `null` when `excluded` is `true` |
+| `setting`, `default_intention` | value | code `intention` or `null`, default `null` |
+| `setting`, `cycle_number_start` | value | JSON integer `>= 1`, default `1` |
+| `setting`, `stats_n` | value | JSON integer `>= 1`, default `12` |
+
+Op rules (the server in `sync.py` and the client in `data/apply.ts` follow them identically):
+
+1. An op is `{entity, key, set}` or `{entity, key, delete: true}`, with no other properties. `set` is a non-empty object holding only fields of that entity. For a setting, `set` is `{value: <json>}` and the map entry becomes that value.
+2. `set` on an existing row merges: listed fields are replaced, `null` clears, unlisted fields are kept.
+3. `set` on a missing row creates it from the defaults above (all other fields `null`), then merges. Sources and settings cannot be created: their keys are fixed.
+4. The merged row is validated as a whole. If it is invalid, the op is rejected and the data is unchanged. A cycle without `start_date` and a reading without `value` are invalid.
+5. `delete: true` removes the row. Deleting a missing row is a no-op and counts as applied. Sources and settings cannot be deleted.
+6. Nothing is normalised: a value is stored exactly as sent or rejected. Clients send `null`, never `[]`, for an empty multi-select.
+7. Ops are applied in order. Each op sees the result of the ops before it, and a rejected op changes nothing.
+8. The only cross-row checks are a reading's and a coverline's source range (read at apply time) and unique `start_date`. Changing a range never revalidates stored rows, but a later op on such a row is checked against the new range. Everything else across rows (marks per cycle, dates outside a cycle) is the client's job and only produces warnings.
+9. `POST /sync` returns `{version, rejected: [{index, error}]}`. `index` points into the sent ops. `error` is display text that names the field and never echoes the value. Tests compare only the indexes.
+
+Fixtures in `fixtures/`:
+- `dataset.sample.json`: a valid dataset with two cycles, used by client tests and as an example.
+- `ops.cases.json`: `{seed, cases: [{name, before, ops, after, rejected}]}`, run by A2 (pytest) and C2 (vitest).
+  - `seed` is a fresh database: both seeded sources (D18), the default settings, no cycles, days or temps.
+  - A case's starting data is `{...seed, ...before}` and the expected result is `{...start, ...after}`: a map given in the case replaces that whole map, a missing one is inherited. `before` and `after` may be omitted.
+  - `rejected` is the sorted list of op indexes that must be rejected. There is no `version` in fixtures.
+
 ## 6. Client data and sync
 
 IndexedDB holds four keys: `data` (the whole dataset), `outbox` (pending ops), `failed` (rejected ops) and `meta` (token, ETag, local schema version, language, theme; see D16).

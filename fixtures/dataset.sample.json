@@ -1,0 +1,39 @@
+{
+  "version": "9f2c41d07a3e",
+  "sources": {
+    "1": {"name": "Usta – Microlife", "site": "oral", "color": "#2563eb", "marker": "circle", "range_min": 3550, "range_max": 3800},
+    "2": {"name": "", "site": "vaginal", "color": "#d97706", "marker": "square", "range_min": 3550, "range_max": 3800}
+  },
+  "cycles": {
+    "0b7c2f4e-6a1d-4c3e-9f2a-1d2e3f4a5b6c": {"start_date": "2026-10-01", "end_date": null, "excluded_from_stats": false, "intention": "avoid", "first_mucus_day": "2026-10-08", "first_hf_mucus_day": "2026-10-10", "coverline_1": 3640, "coverline_2": 3650, "fertile_start": "2026-10-08", "fertile_end": "2026-10-16", "prev_cycle_rise": null, "notes": "Pierwsza karta"},
+    "5f0e9a7c-2b4d-4e8f-a1c3-7d6e5f4a3b2c": {"start_date": "2026-10-29", "end_date": null, "excluded_from_stats": false, "intention": "avoid", "first_mucus_day": null, "first_hf_mucus_day": null, "coverline_1": null, "coverline_2": null, "fertile_start": null, "fertile_end": null, "prev_cycle_rise": null, "notes": null}
+  },
+  "days": {
+    "2026-10-01": {"bleeding": "heavy", "mucus_sensation": null, "mucus_features": null, "mucus_atypical": null, "mucus_quality_override": null, "symptoms": null, "intercourse": null, "disturbances": null, "chart_note": null, "mark_mucus": null, "notes": null},
+    "2026-10-02": {"bleeding": "medium", "mucus_sensation": null, "mucus_features": null, "mucus_atypical": null, "mucus_quality_override": null, "symptoms": null, "intercourse": null, "disturbances": ["short_sleep"], "chart_note": null, "mark_mucus": null, "notes": null},
+    "2026-10-03": {"bleeding": "light", "mucus_sensation": null, "mucus_features": null, "mucus_atypical": null, "mucus_quality_override": null, "symptoms": null, "intercourse": null, "disturbances": null, "chart_note": null, "mark_mucus": null, "notes": null},
+    "2026-10-08": {"bleeding": null, "mucus_sensation": "moist", "mucus_features": ["cloudy", "sticky"], "mucus_atypical": null, "mucus_quality_override": null, "symptoms": null, "intercourse": null, "disturbances": null, "chart_note": null, "mark_mucus": null, "notes": null},
+    "2026-10-09": {"bleeding": null, "mucus_sensation": "moist", "mucus_features": ["cloudy"], "mucus_atypical": null, "mucus_quality_override": "highly_fertile", "symptoms": null, "intercourse": null, "disturbances": null, "chart_note": null, "mark_mucus": null, "notes": null},
+    "2026-10-10": {"bleeding": null, "mucus_sensation": "wet", "mucus_features": ["clear", "stretchy"], "mucus_atypical": null, "mucus_quality_override": null, "symptoms": null, "intercourse": ["evening"], "disturbances": null, "chart_note": null, "mark_mucus": null, "notes": null},
+    "2026-10-12": {"bleeding": null, "mucus_sensation": "wet", "mucus_features": ["clear", "stretchy"], "mucus_atypical": null, "mucus_quality_override": null, "symptoms": ["ovulation_pain"], "intercourse": null, "disturbances": null, "chart_note": null, "mark_mucus": "P", "notes": null},
+    "2026-10-13": {"bleeding": null, "mucus_sensation": "moist", "mucus_features": null, "mucus_atypical": null, "mucus_quality_override": null, "symptoms": null, "intercourse": null, "disturbances": ["illness"], "chart_note": "ból gardła", "mark_mucus": "1", "notes": "pomiar 7:40"},
+    "2026-10-14": {"bleeding": null, "mucus_sensation": "dry", "mucus_features": null, "mucus_atypical": null, "mucus_quality_override": null, "symptoms": null, "intercourse": null, "disturbances": null, "chart_note": null, "mark_mucus": "2", "notes": null},
+    "2026-10-15": {"bleeding": null, "mucus_sensation": "dry", "mucus_features": null, "mucus_atypical": null, "mucus_quality_override": null, "symptoms": null, "intercourse": null, "disturbances": null, "chart_note": null, "mark_mucus": "3", "notes": null},
+    "2026-10-29": {"bleeding": "spotting", "mucus_sensation": null, "mucus_features": null, "mucus_atypical": null, "mucus_quality_override": null, "symptoms": null, "intercourse": null, "disturbances": null, "chart_note": null, "mark_mucus": null, "notes": null}
+  },
+  "temps": {
+    "2026-10-02/1": {"value": 3625, "excluded": false, "mark": null},
+    "2026-10-02/2": {"value": 3640, "excluded": false, "mark": null},
+    "2026-10-12/1": {"value": 3620, "excluded": false, "mark": null},
+    "2026-10-12/2": {"value": 3638, "excluded": false, "mark": null},
+    "2026-10-13/1": {"value": 3672, "excluded": true, "mark": null},
+    "2026-10-13/2": {"value": 3662, "excluded": false, "mark": "1"},
+    "2026-10-14/1": {"value": 3665, "excluded": false, "mark": "1"},
+    "2026-10-14/2": {"value": 3668, "excluded": false, "mark": "2"},
+    "2026-10-15/1": {"value": 3670, "excluded": false, "mark": "2"},
+    "2026-10-15/2": {"value": 3675, "excluded": false, "mark": "3"},
+    "2026-10-16/1": {"value": 3668, "excluded": false, "mark": "3"},
+    "2026-10-29/1": {"value": 3630, "excluded": false, "mark": null}
+  },
+  "settings": {"default_intention": "avoid", "cycle_number_start": 1, "stats_n": 12}
+}

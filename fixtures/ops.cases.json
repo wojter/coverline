@@ -1,0 +1,404 @@
+{
+  "seed": {
+    "sources": {
+      "1": {"name": "", "site": "oral", "color": "#2563eb", "marker": "circle", "range_min": 3550, "range_max": 3800},
+      "2": {"name": "", "site": "oral", "color": "#d97706", "marker": "square", "range_min": 3550, "range_max": 3800}
+    },
+    "cycles": {},
+    "days": {},
+    "temps": {},
+    "settings": {"default_intention": null, "cycle_number_start": 1, "stats_n": 12}
+  },
+  "cases": [
+    {
+      "name": "partial set keeps the fields it does not list",
+      "before": {
+        "days": {
+          "2026-11-18": {"bleeding": "light", "mucus_sensation": "moist", "mucus_features": null, "mucus_atypical": null, "mucus_quality_override": null, "symptoms": null, "intercourse": null, "disturbances": null, "chart_note": null, "mark_mucus": null, "notes": null}
+        }
+      },
+      "ops": [
+        {"entity": "day", "key": "2026-11-18", "set": {"mucus_features": ["sticky"]}}
+      ],
+      "after": {
+        "days": {
+          "2026-11-18": {"bleeding": "light", "mucus_sensation": "moist", "mucus_features": ["sticky"], "mucus_atypical": null, "mucus_quality_override": null, "symptoms": null, "intercourse": null, "disturbances": null, "chart_note": null, "mark_mucus": null, "notes": null}
+        }
+      },
+      "rejected": []
+    },
+    {
+      "name": "null clears a field and keeps the others",
+      "before": {
+        "days": {
+          "2026-11-18": {"bleeding": "spotting", "mucus_sensation": null, "mucus_features": null, "mucus_atypical": null, "mucus_quality_override": null, "symptoms": null, "intercourse": null, "disturbances": null, "chart_note": "ból gardła", "mark_mucus": null, "notes": "7:10"}
+        }
+      },
+      "ops": [
+        {"entity": "day", "key": "2026-11-18", "set": {"chart_note": null}}
+      ],
+      "after": {
+        "days": {
+          "2026-11-18": {"bleeding": "spotting", "mucus_sensation": null, "mucus_features": null, "mucus_atypical": null, "mucus_quality_override": null, "symptoms": null, "intercourse": null, "disturbances": null, "chart_note": null, "mark_mucus": null, "notes": "7:10"}
+        }
+      },
+      "rejected": []
+    },
+    {
+      "name": "set on a missing row creates it with defaults (upsert)",
+      "ops": [
+        {"entity": "day", "key": "2026-11-19", "set": {"mucus_sensation": "dry"}},
+        {"entity": "temp", "key": "2026-11-19/1", "set": {"value": 3645}}
+      ],
+      "after": {
+        "days": {
+          "2026-11-19": {"bleeding": null, "mucus_sensation": "dry", "mucus_features": null, "mucus_atypical": null, "mucus_quality_override": null, "symptoms": null, "intercourse": null, "disturbances": null, "chart_note": null, "mark_mucus": null, "notes": null}
+        },
+        "temps": {
+          "2026-11-19/1": {"value": 3645, "excluded": false, "mark": null}
+        }
+      },
+      "rejected": []
+    },
+    {"name": "a reading cannot be created without a value", "ops": [{"entity": "temp", "key": "2026-11-19/2", "set": {"excluded": true}}], "rejected": [0]},
+    {
+      "name": "ops apply in order and see the ops before them",
+      "ops": [
+        {"entity": "temp", "key": "2026-11-18/1", "set": {"value": 3650}},
+        {"entity": "temp", "key": "2026-11-18/1", "set": {"mark": "1"}},
+        {"entity": "temp", "key": "2026-11-18/2", "set": {"value": 3662}},
+        {"entity": "temp", "key": "2026-11-18/2", "delete": true}
+      ],
+      "after": {
+        "temps": {
+          "2026-11-18/1": {"value": 3650, "excluded": false, "mark": "1"}
+        }
+      },
+      "rejected": []
+    },
+    {
+      "name": "delete removes the row, a reading takes its mark with it (D8)",
+      "before": {
+        "cycles": {
+          "0b7c2f4e-6a1d-4c3e-9f2a-1d2e3f4a5b6c": {"start_date": "2026-11-01", "end_date": null, "excluded_from_stats": false, "intention": null, "first_mucus_day": null, "first_hf_mucus_day": null, "coverline_1": null, "coverline_2": null, "fertile_start": null, "fertile_end": null, "prev_cycle_rise": null, "notes": null}
+        },
+        "days": {
+          "2026-11-18": {"bleeding": "light", "mucus_sensation": null, "mucus_features": null, "mucus_atypical": null, "mucus_quality_override": null, "symptoms": null, "intercourse": null, "disturbances": null, "chart_note": null, "mark_mucus": null, "notes": null}
+        },
+        "temps": {
+          "2026-11-18/1": {"value": 3645, "excluded": false, "mark": "2"},
+          "2026-11-18/2": {"value": 3660, "excluded": false, "mark": null}
+        }
+      },
+      "ops": [
+        {"entity": "temp", "key": "2026-11-18/1", "delete": true},
+        {"entity": "cycle", "key": "0b7c2f4e-6a1d-4c3e-9f2a-1d2e3f4a5b6c", "delete": true}
+      ],
+      "after": {
+        "cycles": {},
+        "temps": {
+          "2026-11-18/2": {"value": 3660, "excluded": false, "mark": null}
+        }
+      },
+      "rejected": []
+    },
+    {
+      "name": "delete of a missing row is a no-op, not rejected",
+      "before": {
+        "days": {
+          "2026-11-18": {"bleeding": "light", "mucus_sensation": null, "mucus_features": null, "mucus_atypical": null, "mucus_quality_override": null, "symptoms": null, "intercourse": null, "disturbances": null, "chart_note": null, "mark_mucus": null, "notes": null}
+        }
+      },
+      "ops": [
+        {"entity": "day", "key": "2026-11-17", "delete": true},
+        {"entity": "temp", "key": "2026-11-18/2", "delete": true},
+        {"entity": "cycle", "key": "5f0e9a7c-2b4d-4e8f-a1c3-7d6e5f4a3b2c", "delete": true}
+      ],
+      "rejected": []
+    },
+    {
+      "name": "excluding a reading that has a mark needs mark null in the same op",
+      "before": {
+        "temps": {
+          "2026-11-18/1": {"value": 3645, "excluded": false, "mark": "1"}
+        }
+      },
+      "ops": [
+        {"entity": "temp", "key": "2026-11-18/1", "set": {"excluded": true}},
+        {"entity": "temp", "key": "2026-11-18/1", "set": {"excluded": true, "mark": null}},
+        {"entity": "temp", "key": "2026-11-18/1", "set": {"mark": "2"}}
+      ],
+      "after": {
+        "temps": {
+          "2026-11-18/1": {"value": 3645, "excluded": true, "mark": null}
+        }
+      },
+      "rejected": [0, 2]
+    },
+    {
+      "name": "a reading must be within its own source's range, bounds included",
+      "before": {
+        "sources": {
+          "1": {"name": "", "site": "oral", "color": "#2563eb", "marker": "circle", "range_min": 3550, "range_max": 3800},
+          "2": {"name": "", "site": "finger", "color": "#d97706", "marker": "square", "range_min": 3300, "range_max": 3800}
+        }
+      },
+      "ops": [
+        {"entity": "temp", "key": "2026-11-18/1", "set": {"value": 3549}},
+        {"entity": "temp", "key": "2026-11-18/1", "set": {"value": 3801}},
+        {"entity": "temp", "key": "2026-11-18/1", "set": {"value": 3550}},
+        {"entity": "temp", "key": "2026-11-19/1", "set": {"value": 3800}},
+        {"entity": "temp", "key": "2026-11-18/2", "set": {"value": 3400}},
+        {"entity": "temp", "key": "2026-11-19/1", "set": {"value": 3400}}
+      ],
+      "after": {
+        "temps": {
+          "2026-11-18/1": {"value": 3550, "excluded": false, "mark": null},
+          "2026-11-19/1": {"value": 3800, "excluded": false, "mark": null},
+          "2026-11-18/2": {"value": 3400, "excluded": false, "mark": null}
+        }
+      },
+      "rejected": [0, 1, 5]
+    },
+    {
+      "name": "a coverline must be within its own source's range",
+      "before": {
+        "sources": {
+          "1": {"name": "", "site": "oral", "color": "#2563eb", "marker": "circle", "range_min": 3550, "range_max": 3800},
+          "2": {"name": "", "site": "finger", "color": "#d97706", "marker": "square", "range_min": 3300, "range_max": 3800}
+        },
+        "cycles": {
+          "0b7c2f4e-6a1d-4c3e-9f2a-1d2e3f4a5b6c": {"start_date": "2026-11-01", "end_date": null, "excluded_from_stats": false, "intention": null, "first_mucus_day": null, "first_hf_mucus_day": null, "coverline_1": null, "coverline_2": null, "fertile_start": null, "fertile_end": null, "prev_cycle_rise": null, "notes": null}
+        }
+      },
+      "ops": [
+        {"entity": "cycle", "key": "0b7c2f4e-6a1d-4c3e-9f2a-1d2e3f4a5b6c", "set": {"coverline_1": 3400}},
+        {"entity": "cycle", "key": "0b7c2f4e-6a1d-4c3e-9f2a-1d2e3f4a5b6c", "set": {"coverline_2": 3400}},
+        {"entity": "cycle", "key": "0b7c2f4e-6a1d-4c3e-9f2a-1d2e3f4a5b6c", "set": {"coverline_1": 3650}},
+        {"entity": "cycle", "key": "0b7c2f4e-6a1d-4c3e-9f2a-1d2e3f4a5b6c", "set": {"coverline_2": 3801}}
+      ],
+      "after": {
+        "cycles": {
+          "0b7c2f4e-6a1d-4c3e-9f2a-1d2e3f4a5b6c": {"start_date": "2026-11-01", "end_date": null, "excluded_from_stats": false, "intention": null, "first_mucus_day": null, "first_hf_mucus_day": null, "coverline_1": 3650, "coverline_2": 3400, "fertile_start": null, "fertile_end": null, "prev_cycle_rise": null, "notes": null}
+        }
+      },
+      "rejected": [0, 3]
+    },
+    {
+      "name": "a range change keeps stored rows, later ops on them use the new range",
+      "before": {
+        "temps": {
+          "2026-11-18/1": {"value": 3560, "excluded": false, "mark": null}
+        }
+      },
+      "ops": [
+        {"entity": "source", "key": "1", "set": {"range_min": 3600}},
+        {"entity": "temp", "key": "2026-11-18/1", "set": {"excluded": true}},
+        {"entity": "temp", "key": "2026-11-18/1", "set": {"value": 3610, "excluded": true}}
+      ],
+      "after": {
+        "sources": {
+          "1": {"name": "", "site": "oral", "color": "#2563eb", "marker": "circle", "range_min": 3600, "range_max": 3800},
+          "2": {"name": "", "site": "oral", "color": "#d97706", "marker": "square", "range_min": 3550, "range_max": 3800}
+        },
+        "temps": {
+          "2026-11-18/1": {"value": 3610, "excluded": true, "mark": null}
+        }
+      },
+      "rejected": [1]
+    },
+    {
+      "name": "chart_note is at most 30 Unicode code points (D17)",
+      "ops": [
+        {"entity": "day", "key": "2026-11-18", "set": {"chart_note": "abcdefghijklmnopqrstuvwxyz01234"}},
+        {"entity": "day", "key": "2026-11-18", "set": {"chart_note": "ból gardła, zła noc, kaszel ąę"}},
+        {"entity": "day", "key": "2026-11-19", "set": {"chart_note": "𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀"}},
+        {"entity": "day", "key": "2026-11-19", "set": {"chart_note": "𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀"}}
+      ],
+      "after": {
+        "days": {
+          "2026-11-18": {"bleeding": null, "mucus_sensation": null, "mucus_features": null, "mucus_atypical": null, "mucus_quality_override": null, "symptoms": null, "intercourse": null, "disturbances": null, "chart_note": "ból gardła, zła noc, kaszel ąę", "mark_mucus": null, "notes": null},
+          "2026-11-19": {"bleeding": null, "mucus_sensation": null, "mucus_features": null, "mucus_atypical": null, "mucus_quality_override": null, "symptoms": null, "intercourse": null, "disturbances": null, "chart_note": "𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀𝐀", "mark_mucus": null, "notes": null}
+        }
+      },
+      "rejected": [0, 3]
+    },
+    {
+      "name": "dates must be real YYYY-MM-DD dates, in keys and in fields",
+      "ops": [
+        {"entity": "day", "key": "2026-13-01", "set": {"notes": "x"}},
+        {"entity": "day", "key": "2026-5-10", "set": {"notes": "x"}},
+        {"entity": "temp", "key": "2026-13-01/1", "set": {"value": 3650}},
+        {"entity": "cycle", "key": "0b7c2f4e-6a1d-4c3e-9f2a-1d2e3f4a5b6c", "set": {"start_date": "2026-5-10"}},
+        {"entity": "day", "key": "2026-02-29", "set": {"notes": "x"}},
+        {"entity": "day", "key": "2028-02-29", "set": {"notes": "x"}},
+        {"entity": "cycle", "key": "0b7c2f4e-6a1d-4c3e-9f2a-1d2e3f4a5b6c", "set": {"start_date": "2026-11-01", "end_date": "2026-13-01"}},
+        {"entity": "cycle", "key": "0b7c2f4e-6a1d-4c3e-9f2a-1d2e3f4a5b6c", "set": {"start_date": "2026-11-01"}}
+      ],
+      "after": {
+        "days": {
+          "2028-02-29": {"bleeding": null, "mucus_sensation": null, "mucus_features": null, "mucus_atypical": null, "mucus_quality_override": null, "symptoms": null, "intercourse": null, "disturbances": null, "chart_note": null, "mark_mucus": null, "notes": "x"}
+        },
+        "cycles": {
+          "0b7c2f4e-6a1d-4c3e-9f2a-1d2e3f4a5b6c": {"start_date": "2026-11-01", "end_date": null, "excluded_from_stats": false, "intention": null, "first_mucus_day": null, "first_hf_mucus_day": null, "coverline_1": null, "coverline_2": null, "fertile_start": null, "fertile_end": null, "prev_cycle_rise": null, "notes": null}
+        }
+      },
+      "rejected": [0, 1, 2, 3, 4, 6]
+    },
+    {
+      "name": "a duplicate start_date is rejected alone, the rest of the batch applies",
+      "before": {
+        "cycles": {
+          "0b7c2f4e-6a1d-4c3e-9f2a-1d2e3f4a5b6c": {"start_date": "2026-10-01", "end_date": null, "excluded_from_stats": false, "intention": null, "first_mucus_day": null, "first_hf_mucus_day": null, "coverline_1": null, "coverline_2": null, "fertile_start": null, "fertile_end": null, "prev_cycle_rise": null, "notes": null}
+        }
+      },
+      "ops": [
+        {"entity": "cycle", "key": "5f0e9a7c-2b4d-4e8f-a1c3-7d6e5f4a3b2c", "set": {"start_date": "2026-10-01"}},
+        {"entity": "cycle", "key": "5f0e9a7c-2b4d-4e8f-a1c3-7d6e5f4a3b2c", "set": {"start_date": "2026-10-29"}},
+        {"entity": "cycle", "key": "0b7c2f4e-6a1d-4c3e-9f2a-1d2e3f4a5b6c", "set": {"start_date": "2026-10-29"}},
+        {"entity": "day", "key": "2026-10-29", "set": {"bleeding": "medium"}}
+      ],
+      "after": {
+        "cycles": {
+          "0b7c2f4e-6a1d-4c3e-9f2a-1d2e3f4a5b6c": {"start_date": "2026-10-01", "end_date": null, "excluded_from_stats": false, "intention": null, "first_mucus_day": null, "first_hf_mucus_day": null, "coverline_1": null, "coverline_2": null, "fertile_start": null, "fertile_end": null, "prev_cycle_rise": null, "notes": null},
+          "5f0e9a7c-2b4d-4e8f-a1c3-7d6e5f4a3b2c": {"start_date": "2026-10-29", "end_date": null, "excluded_from_stats": false, "intention": null, "first_mucus_day": null, "first_hf_mucus_day": null, "coverline_1": null, "coverline_2": null, "fertile_start": null, "fertile_end": null, "prev_cycle_rise": null, "notes": null}
+        },
+        "days": {
+          "2026-10-29": {"bleeding": "medium", "mucus_sensation": null, "mucus_features": null, "mucus_atypical": null, "mucus_quality_override": null, "symptoms": null, "intercourse": null, "disturbances": null, "chart_note": null, "mark_mucus": null, "notes": null}
+        }
+      },
+      "rejected": [0, 2]
+    },
+    {
+      "name": "code arrays: known codes, spec 2.4 order, no duplicates, never empty",
+      "ops": [
+        {"entity": "day", "key": "2026-11-18", "set": {"mucus_features": ["clear", "glossy"]}},
+        {"entity": "day", "key": "2026-11-18", "set": {"symptoms": ["breast_tension", "ovulation_pain"]}},
+        {"entity": "day", "key": "2026-11-18", "set": {"disturbances": ["alcohol", "alcohol"]}},
+        {"entity": "day", "key": "2026-11-18", "set": {"intercourse": []}},
+        {"entity": "day", "key": "2026-11-18", "set": {"mucus_features": "clear"}},
+        {"entity": "day", "key": "2026-11-18", "set": {"mucus_features": ["cloudy", "sticky", "clear", "stretchy"], "symptoms": ["ovulation_pain", "breast_tension"], "intercourse": ["morning", "evening"], "disturbances": ["alcohol", "short_sleep", "late_measurement", "illness", "stress", "travel"]}}
+      ],
+      "after": {
+        "days": {
+          "2026-11-18": {"bleeding": null, "mucus_sensation": null, "mucus_features": ["cloudy", "sticky", "clear", "stretchy"], "mucus_atypical": null, "mucus_quality_override": null, "symptoms": ["ovulation_pain", "breast_tension"], "intercourse": ["morning", "evening"], "disturbances": ["alcohol", "short_sleep", "late_measurement", "illness", "stress", "travel"], "chart_note": null, "mark_mucus": null, "notes": null}
+        }
+      },
+      "rejected": [0, 1, 2, 3, 4]
+    },
+    {
+      "name": "codes, marks and JSON types are checked",
+      "ops": [
+        {"entity": "day", "key": "2026-11-18", "set": {"bleeding": "heavy_flow"}},
+        {"entity": "day", "key": "2026-11-18", "set": {"mucus_atypical": 1}},
+        {"entity": "temp", "key": "2026-11-18/1", "set": {"value": "3645"}},
+        {"entity": "temp", "key": "2026-11-18/1", "set": {"value": 36.45}},
+        {"entity": "temp", "key": "2026-11-18/1", "set": {"value": 3645, "mark": 3}},
+        {"entity": "day", "key": "2026-11-18", "set": {"mark_mucus": "4"}},
+        {"entity": "temp", "key": "2026-11-18/1", "set": {"value": 3645, "mark": "4"}},
+        {"entity": "day", "key": "2026-11-18", "set": {"mark_mucus": "P", "mucus_atypical": true, "mucus_quality_override": "highly_fertile"}},
+        {"entity": "day", "key": "2026-11-18", "set": {"mucus_quality_override": "fertile"}}
+      ],
+      "after": {
+        "days": {
+          "2026-11-18": {"bleeding": null, "mucus_sensation": null, "mucus_features": null, "mucus_atypical": true, "mucus_quality_override": "highly_fertile", "symptoms": null, "intercourse": null, "disturbances": null, "chart_note": null, "mark_mucus": "P", "notes": null}
+        },
+        "temps": {
+          "2026-11-18/1": {"value": 3645, "excluded": false, "mark": "4"}
+        }
+      },
+      "rejected": [0, 1, 2, 3, 4, 5, 8]
+    },
+    {
+      "name": "op shape and keys are checked",
+      "ops": [
+        {"entity": "day", "key": "2026-11-18", "set": {"notes": "a"}, "delete": true},
+        {"entity": "day", "key": "2026-11-18", "set": {}},
+        {"entity": "day", "key": "2026-11-18", "set": {"cervix": "high"}},
+        {"entity": "note", "key": "2026-11-18", "set": {"notes": "a"}},
+        {"entity": "day", "key": "2026-11-18"},
+        {"entity": "day", "key": "2026-11-18", "delete": false},
+        {"entity": "day", "key": "2026-11-18", "set": {"notes": "a"}, "device": "ios"},
+        {"entity": "temp", "key": "2026-11-18/3", "set": {"value": 3650}},
+        {"entity": "temp", "key": "2026-11-18", "set": {"value": 3650}},
+        {"entity": "cycle", "key": "not-a-uuid", "set": {"start_date": "2026-11-01"}},
+        {"entity": "cycle", "key": "0B7C2F4E-6A1D-4C3E-9F2A-1D2E3F4A5B6C", "set": {"start_date": "2026-11-01"}},
+        {"entity": "source", "key": "3", "set": {"name": "third"}},
+        {"entity": "source", "key": "1", "delete": true},
+        {"entity": "setting", "key": "stats_n", "delete": true},
+        {"entity": "setting", "key": "language", "set": {"value": "pl"}},
+        {"entity": "day", "key": "2026-11-18", "set": {"notes": "ok"}}
+      ],
+      "after": {
+        "days": {
+          "2026-11-18": {"bleeding": null, "mucus_sensation": null, "mucus_features": null, "mucus_atypical": null, "mucus_quality_override": null, "symptoms": null, "intercourse": null, "disturbances": null, "chart_note": null, "mark_mucus": null, "notes": "ok"}
+        }
+      },
+      "rejected": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+    },
+    {
+      "name": "cycle rows: moving a start keeps every field, single-row rules hold",
+      "before": {
+        "cycles": {
+          "0b7c2f4e-6a1d-4c3e-9f2a-1d2e3f4a5b6c": {"start_date": "2026-10-01", "end_date": null, "excluded_from_stats": false, "intention": "avoid", "first_mucus_day": "2026-10-09", "first_hf_mucus_day": null, "coverline_1": 3640, "coverline_2": null, "fertile_start": "2026-10-09", "fertile_end": "2026-10-15", "prev_cycle_rise": null, "notes": "first card"}
+        }
+      },
+      "ops": [
+        {"entity": "cycle", "key": "0b7c2f4e-6a1d-4c3e-9f2a-1d2e3f4a5b6c", "set": {"start_date": "2026-10-02"}},
+        {"entity": "cycle", "key": "0b7c2f4e-6a1d-4c3e-9f2a-1d2e3f4a5b6c", "set": {"start_date": null}},
+        {"entity": "cycle", "key": "0b7c2f4e-6a1d-4c3e-9f2a-1d2e3f4a5b6c", "set": {"end_date": "2026-09-30"}},
+        {"entity": "cycle", "key": "0b7c2f4e-6a1d-4c3e-9f2a-1d2e3f4a5b6c", "set": {"end_date": "2026-10-27"}},
+        {"entity": "cycle", "key": "0b7c2f4e-6a1d-4c3e-9f2a-1d2e3f4a5b6c", "set": {"fertile_end": "2026-10-08"}},
+        {"entity": "cycle", "key": "0b7c2f4e-6a1d-4c3e-9f2a-1d2e3f4a5b6c", "set": {"excluded_from_stats": null}},
+        {"entity": "cycle", "key": "0b7c2f4e-6a1d-4c3e-9f2a-1d2e3f4a5b6c", "set": {"excluded_from_stats": true, "prev_cycle_rise": false}},
+        {"entity": "cycle", "key": "5f0e9a7c-2b4d-4e8f-a1c3-7d6e5f4a3b2c", "set": {"intention": "avoid"}},
+        {"entity": "cycle", "key": "0b7c2f4e-6a1d-4c3e-9f2a-1d2e3f4a5b6c", "set": {"intention": "maybe"}},
+        {"entity": "cycle", "key": "0b7c2f4e-6a1d-4c3e-9f2a-1d2e3f4a5b6c", "set": {"first_hf_mucus_day": "2026-09-01"}}
+      ],
+      "after": {
+        "cycles": {
+          "0b7c2f4e-6a1d-4c3e-9f2a-1d2e3f4a5b6c": {"start_date": "2026-10-02", "end_date": "2026-10-27", "excluded_from_stats": true, "intention": "avoid", "first_mucus_day": "2026-10-09", "first_hf_mucus_day": "2026-09-01", "coverline_1": 3640, "coverline_2": null, "fertile_start": "2026-10-09", "fertile_end": "2026-10-15", "prev_cycle_rise": false, "notes": "first card"}
+        }
+      },
+      "rejected": [1, 2, 4, 5, 7, 8]
+    },
+    {
+      "name": "sources: fixed keys, lowercase colour, valid codes, min below max",
+      "ops": [
+        {"entity": "source", "key": "1", "set": {"name": "Usta – Microlife", "color": "#7c3aed"}},
+        {"entity": "source", "key": "1", "set": {"color": "#7C3AED"}},
+        {"entity": "source", "key": "1", "set": {"color": "blue"}},
+        {"entity": "source", "key": "2", "set": {"site": "finger", "range_min": 3300}},
+        {"entity": "source", "key": "2", "set": {"range_min": 3800}},
+        {"entity": "source", "key": "1", "set": {"name": null}},
+        {"entity": "source", "key": "2", "set": {"marker": "star"}},
+        {"entity": "source", "key": "2", "set": {"marker": "diamond", "name": ""}}
+      ],
+      "after": {
+        "sources": {
+          "1": {"name": "Usta – Microlife", "site": "oral", "color": "#7c3aed", "marker": "circle", "range_min": 3550, "range_max": 3800},
+          "2": {"name": "", "site": "finger", "color": "#d97706", "marker": "diamond", "range_min": 3300, "range_max": 3800}
+        }
+      },
+      "rejected": [1, 2, 4, 5, 6]
+    },
+    {
+      "name": "settings: value types and bounds",
+      "ops": [
+        {"entity": "setting", "key": "stats_n", "set": {"value": 6}},
+        {"entity": "setting", "key": "stats_n", "set": {"value": 0}},
+        {"entity": "setting", "key": "stats_n", "set": {"value": null}},
+        {"entity": "setting", "key": "cycle_number_start", "set": {"value": 5}},
+        {"entity": "setting", "key": "cycle_number_start", "set": {"value": "5"}},
+        {"entity": "setting", "key": "default_intention", "set": {"value": "conceive"}},
+        {"entity": "setting", "key": "default_intention", "set": {"value": null}},
+        {"entity": "setting", "key": "default_intention", "set": {"value": "both"}},
+        {"entity": "setting", "key": "stats_n", "set": {"n": 6}}
+      ],
+      "after": {
+        "settings": {"default_intention": null, "cycle_number_start": 5, "stats_n": 6}
+      },
+      "rejected": [1, 2, 4, 7, 8]
+    }
+  ]
+}
