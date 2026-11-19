@@ -1,0 +1,11 @@
+[Unit]
+Description=Coverline daily database backup and offsite copy
+Wants=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/coverline
+EnvironmentFile=/etc/coverline/restic.env
+ExecStart=/usr/bin/docker compose exec -T app python -m app.backup
+ExecStartPost=/opt/coverline/ops/restic.sh
