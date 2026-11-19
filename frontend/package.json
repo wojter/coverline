@@ -1,0 +1,29 @@
+{
+  "name": "coverline-frontend",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@preact/signals": "2.11.4",
+    "idb-keyval": "6.3.0",
+    "lucide-preact": "1.72.0",
+    "preact": "11.2.0",
+    "preact-iso": "2.12.2"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "2.10.6",
+    "@tailwindcss/vite": "4.3.5",
+    "daisyui": "5.7.50",
+    "tailwindcss": "4.3.5",
+    "typescript": "7.0.2",
+    "vite": "8.3.8",
+    "vite-plugin-pwa": "2.0.0",
+    "vitest": "5.1.0"
+  }
+}
