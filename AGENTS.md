@@ -20,6 +20,7 @@
 - `make setup`: install backend (`uv sync`) and frontend (`npm ci`) dependencies.
 - `make check`: lint (ruff), API tests (pytest), typecheck, web tests (vitest), web build. Must be green before a task is done.
 - `make dev-api`: API on `127.0.0.1:8000` with `ENV=dev AUTH_MODE=dev`, using `./data-dev`. Never the production DB.
+- `make dev-seed`: fills the running dev API with a demo dataset (through the normal sync path, localhost only).
 - `make dev-web`: Vite dev server; `/api` is proxied to the API.
 
 Dependencies: backend in `backend/pyproject.toml` (pinned with `==`, managed with uv); frontend in `frontend/package.json` (exact versions, `npm`). Resolve only versions published at least 7 days ago.

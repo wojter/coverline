@@ -1,4 +1,4 @@
-.PHONY: setup check lint test-api typecheck test-web build-web dev-api dev-web
+.PHONY: setup check lint test-api typecheck test-web build-web dev-api dev-seed dev-web
 
 setup:
 	cd backend && uv sync --locked
@@ -24,6 +24,9 @@ build-web:
 dev-api:
 	mkdir -p data-dev
 	cd backend && ENV=dev AUTH_MODE=dev DEV_IDENTITY=dev DATA_DIR=$(CURDIR)/data-dev uv run uvicorn app.main:create_app --factory --reload --host 127.0.0.1 --port 8000
+
+dev-seed:
+	cd backend && uv run python scripts/dev_seed.py
 
 dev-web:
 	cd frontend && npm run dev
