@@ -1,5 +1,6 @@
 import { useRegisterSW } from 'virtual:pwa-register/preact';
 import { t } from '../i18n';
+import { dirty } from './useDayDraft';
 
 // The update is applied only when the user taps the button, never on its own.
 export function UpdateToast() {
@@ -7,9 +8,9 @@ export function UpdateToast() {
     needRefresh: [needRefresh],
     updateServiceWorker,
   } = useRegisterSW();
-  if (!needRefresh) return null;
+  if (!needRefresh || dirty.value) return null;
   return (
-    <div class="toast toast-center toast-bottom z-50 mb-20 lg:mb-4">
+    <div class="toast toast-center toast-bottom z-50 mb-20 print:hidden lg:mb-4">
       <div class="alert rounded-box border border-base-300 bg-base-100 shadow-lg">
         <span>{t('update.available')}</span>
         <button

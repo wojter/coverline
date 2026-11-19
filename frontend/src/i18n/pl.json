@@ -87,7 +87,8 @@
     "site": "Miejsce pomiaru",
     "fromCycles": "z {count} cykli",
     "cycleDayLabel": "DZIEŃ CYKLU",
-    "noCycle": "Brak bieżącego cyklu"
+    "noCycle": "Brak bieżącego cyklu",
+    "prevCycleRise": "Wzrost temperatury w poprzednim cyklu"
   },
   "codes": {
     "bleeding": {
@@ -176,7 +177,46 @@
     "symptoms": "Objawy dodatkowe",
     "fertileDays": "Dni płodne",
     "intercourse": "Współżycie",
-    "disturbances": "Zakłócenia"
+    "disturbances": "Zakłócenia",
+    "title": "Karta cyklu",
+    "noCycleForDate": "Ta data nie należy do żadnego cyklu.",
+    "cycleNo": "Cykl nr {n}",
+    "open": "trwa",
+    "lengthDays": "{n} dni",
+    "excludedBadge": "pominięty",
+    "previousCycle": "Poprzedni cykl",
+    "nextCycle": "Następny cykl",
+    "cycleList": "Wszystkie cykle",
+    "sources": "Pomiary",
+    "noteTitle": "Komentarz, {date}",
+    "interpretation": "Interpretacja",
+    "mode": {
+      "normal": "Podgląd",
+      "coverline": "Linia",
+      "fertile": "Dni płodne",
+      "marks": "Oznaczenia"
+    },
+    "hint": {
+      "fertileStart": "Dotknij pierwszego dnia płodnego",
+      "fertileEnd": "Dotknij ostatniego dnia płodnego"
+    },
+    "coverline": "Linia pokrywająca",
+    "coverlineSource": "Pomiar dla linii pokrywającej",
+    "track": {
+      "title": "Oznaczenia",
+      "mucus": "Śluz"
+    },
+    "confirm": "Potwierdź",
+    "editCycle": "Edytuj cykl",
+    "summary": "Podsumowanie",
+    "excludedNotice": "Ten cykl jest pominięty w statystykach.",
+    "print": "Drukuj",
+    "legend": "Legenda",
+    "legendFertile": "Dni płodne: pasek ze skosami",
+    "legendBleeding": "Krwawienie: wypełniony kwadrat w kolorze krwawienia",
+    "definitions": "Definicje śluzu",
+    "lastUpdated": "Zaktualizowano {date}",
+    "noCycles": "Brak cykli. Dodaj początek cyklu w kalendarzu."
   },
   "day1": {
     "askBody": "Ten dzień jest w cyklu rozpoczętym {start}. Przesunąć ten początek tutaj, czy rozpocząć nowy cykl?",
@@ -185,7 +225,10 @@
     "moveToOther": "Przesuń początek na inny dzień",
     "removeStart": "Usuń początek cyklu",
     "neighbour": "Początek nie może przesunąć się na początek innego cyklu ani za niego.",
-    "afterEnd": "Początek nie może być po dacie końca cyklu."
+    "afterEnd": "Początek nie może być po dacie końca cyklu.",
+    "askTitle": "1. dzień cyklu",
+    "uncheckTitle": "Początek cyklu",
+    "apply": "Zastosuj"
   },
   "warning": {
     "duplicate": "{mark} jest zaznaczone w więcej niż jednym dniu tego cyklu. Używany jest najwcześniejszy dzień.",
@@ -204,12 +247,44 @@
       "rejected": "Serwer odrzucił ten token. Sprawdź, czy jest aktualny.",
       "connectedAs": "Połączono jako {device}",
       "tokenEnding": "Token ••••{last}",
-      "notConnected": "Brak połączenia. Aplikacja działa offline."
+      "notConnected": "Brak połączenia. Aplikacja działa offline.",
+      "offline": "Brak sieci. Token zostaje, synchronizacja wznowi się później."
     },
     "storage": {
       "title": "Pamięć",
       "persisted": "Chroniona przed automatycznym czyszczeniem",
       "notPersisted": "Przeglądarka może wyczyścić te dane"
+    },
+    "sources": {
+      "title": "Pomiary",
+      "name": "Nazwa",
+      "site": "Miejsce pomiaru",
+      "siteHint": "Zmiana miejsca ustawia jego domyślny zakres.",
+      "colour": "Kolor",
+      "marker": "Kształt znacznika",
+      "range": "Zakres ważności (°C)",
+      "min": "Minimum",
+      "max": "Maksimum",
+      "applyRange": "Zastosuj zakres",
+      "rangeInvalid": "Wpisz dwie temperatury, minimum mniejsze od maksimum."
+    },
+    "cycle": {
+      "title": "Cykl",
+      "intention": "Domyślny cel",
+      "intentionHint": "Kopiowany do nowych cykli. Istniejące cykle zachowują swój.",
+      "startNumber": "Numer pierwszego cyklu",
+      "statsN": "N dla najkrótszego i najdłuższego"
+    },
+    "data": {
+      "title": "Dane",
+      "csv": "Pobierz CSV",
+      "json": "Pobierz JSON",
+      "jsonError": "Eksport JSON się nie udał. Sprawdź połączenie.",
+      "jsonNeedsConnection": "Połącz urządzenie, aby eksportować JSON.",
+      "queue": "Czeka na wysłanie: {count}",
+      "failed": "Nieprzyjęte przez serwer",
+      "retry": "Ponów",
+      "discard": "Odrzuć"
     }
   },
   "csv": {
@@ -226,5 +301,94 @@
     "mucusMark": "Oznaczenie śluzu",
     "chartNote": "Komentarz na karcie",
     "notes": "Notatki"
+  },
+  "common": {
+    "close": "Zamknij",
+    "more": "Więcej"
+  },
+  "components": {
+    "save": {
+      "button": "Zapisz",
+      "saved": "Zapisano",
+      "invalid": "Sprawdź temperaturę",
+      "noReading": "Ten dzień nie ma pomiaru z tego źródła",
+      "rejected": "Nie zapisano: serwer odrzucił zmianę"
+    },
+    "clear": "Wyczyść",
+    "yes": "Tak",
+    "no": "Nie",
+    "rise": {
+      "auto": "Automatycznie",
+      "yes": "Tak",
+      "no": "Nie"
+    },
+    "mucusInfo": {
+      "title": "Definicje śluzu"
+    },
+    "temp": {
+      "clear": "Usuń ten pomiar",
+      "invalid": "Wpisz wartość, np. 36,45",
+      "outOfRange": "Zakres ważności {min} – {max}"
+    },
+    "dayForm": {
+      "temperature": "Temperatura",
+      "bleeding": "Krwawienie",
+      "mucus": "Śluz",
+      "symptoms": "Objawy",
+      "qualityEmpty": "nie zapisano",
+      "auto": "auto",
+      "changed": "zmienione",
+      "reset": "Przywróć automatyczne",
+      "mucusInfo": "Definicje śluzu",
+      "marks": "Oznaczenia",
+      "noReadingForMark": "Najpierw wpisz pomiar",
+      "commentAndNotes": "Komentarz i notatki",
+      "counter": "{count} / {max}"
+    }
+  },
+  "today": {
+    "cycleNo": "Cykl nr",
+    "today": "Dziś",
+    "openEntry": "Otwórz pełny wpis",
+    "quickForm": "Szybki wpis",
+    "fullForm": "Pełny formularz"
+  },
+  "entry": {
+    "cycleDay": "{day}. dzień cyklu",
+    "noCycle": "Poza cyklem",
+    "back": "Wstecz",
+    "previous": "Poprzedni dzień",
+    "next": "Następny dzień"
+  },
+  "calendar": {
+    "markingBanner": "Dotknij dnia, aby ustawić lub usunąć początek cyklu",
+    "markStarts": "Zaznacz początki cykli",
+    "previousMonth": "Poprzedni miesiąc",
+    "nextMonth": "Następny miesiąc",
+    "legend": "Legenda",
+    "legendStart": "1. dzień cyklu",
+    "legendPeak": "Szczyt śluzu",
+    "legendHighlyFertile": "Śluz wysoce płodny",
+    "legendLessFertile": "Śluz mniej płodny",
+    "legendFertile": "Dni płodne",
+    "legendReading": "Zapisany pomiar (puste = pominięty)"
+  },
+  "stats": {
+    "totals": "Podsumowanie",
+    "overall": "Wszystkie cykle",
+    "lastN": "Ostatnie {n} cykli",
+    "cycles": "Cykle",
+    "cycleNo": "Nr",
+    "excluded": "pominięty",
+    "count": "Liczba",
+    "average": "Średnia",
+    "min": "Min",
+    "max": "Maks",
+    "sourceEvaluation": "Ocena pomiarów",
+    "daysWithReading": "Dni z pomiarem",
+    "missingDays": "Dni bez pomiaru",
+    "excludedReadings": "Pominięte pomiary",
+    "cyclesWithRise": "Cykle ze wzrostem",
+    "peakToThird": "Dni od szczytu śluzu do trzeciego dnia temperatury"
   }
 }

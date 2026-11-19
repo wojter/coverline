@@ -1,4 +1,4 @@
-import { outbox, syncState, type SyncState } from '../data/state';
+import { lastSaved, outbox, syncState, type SyncState } from '../data/state';
 import { t } from '../i18n';
 
 const LABELS: Record<SyncState, string> = {
@@ -12,6 +12,10 @@ const LABELS: Record<SyncState, string> = {
 
 export function SyncBadge() {
   const pending = outbox.value.length;
-  const text = pending > 0 ? t('sync.queued', { count: pending }) : t(LABELS[syncState.value]);
+  let text: string;
+  if (pending > 0) text = t('sync.queued', { count: pending });
+  else if (syncState.value === 'idle' && lastSaved.value === 'synced') text = t('sync.synced');
+  else if (syncState.value === 'idle' && lastSaved.value === 'local') text = t('sync.saved');
+  else text = t(LABELS[syncState.value]);
   return <span class="badge badge-ghost whitespace-nowrap">{text}</span>;
 }

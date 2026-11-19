@@ -87,7 +87,8 @@
     "site": "Measurement site",
     "fromCycles": "from {count} cycles",
     "cycleDayLabel": "CYCLE DAY",
-    "noCycle": "No current cycle"
+    "noCycle": "No current cycle",
+    "prevCycleRise": "Temperature rise in previous cycle"
   },
   "codes": {
     "bleeding": {
@@ -176,7 +177,46 @@
     "symptoms": "Additional symptoms",
     "fertileDays": "Fertile days",
     "intercourse": "Intercourse",
-    "disturbances": "Disturbances"
+    "disturbances": "Disturbances",
+    "title": "Cycle chart",
+    "noCycleForDate": "This date is not in any cycle.",
+    "cycleNo": "Cycle {n}",
+    "open": "open",
+    "lengthDays": "{n} days",
+    "excludedBadge": "excluded",
+    "previousCycle": "Previous cycle",
+    "nextCycle": "Next cycle",
+    "cycleList": "All cycles",
+    "sources": "Sources",
+    "noteTitle": "Comment, {date}",
+    "interpretation": "Interpretation",
+    "mode": {
+      "normal": "View",
+      "coverline": "Coverline",
+      "fertile": "Fertile days",
+      "marks": "Marks"
+    },
+    "hint": {
+      "fertileStart": "Tap the first fertile day",
+      "fertileEnd": "Tap the last fertile day"
+    },
+    "coverline": "Coverline",
+    "coverlineSource": "Source for the coverline",
+    "track": {
+      "title": "Track",
+      "mucus": "Mucus"
+    },
+    "confirm": "Confirm",
+    "editCycle": "Edit cycle",
+    "summary": "Summary",
+    "excludedNotice": "This cycle is excluded from statistics.",
+    "print": "Print",
+    "legend": "Legend",
+    "legendFertile": "Fertile days: hatched band",
+    "legendBleeding": "Bleeding: filled square in the bleeding colour",
+    "definitions": "Mucus definitions",
+    "lastUpdated": "Updated {date}",
+    "noCycles": "No cycles yet. Add a cycle start in the calendar."
   },
   "day1": {
     "askBody": "This day is inside the cycle that started {start}. Move that start here, or start a new cycle?",
@@ -185,7 +225,10 @@
     "moveToOther": "Move the start to another day",
     "removeStart": "Remove this cycle start",
     "neighbour": "A start cannot move onto or past the start of another cycle.",
-    "afterEnd": "A start cannot move after the cycle's end date."
+    "afterEnd": "A start cannot move after the cycle's end date.",
+    "askTitle": "Cycle day 1",
+    "uncheckTitle": "Cycle start",
+    "apply": "Apply"
   },
   "warning": {
     "duplicate": "{mark} is marked on more than one day in this cycle. The earliest day is used.",
@@ -204,12 +247,44 @@
       "rejected": "The server rejected this token. Check that it is current.",
       "connectedAs": "Connected as {device}",
       "tokenEnding": "Token ••••{last}",
-      "notConnected": "Not connected. The app works offline."
+      "notConnected": "Not connected. The app works offline.",
+      "offline": "No network. The token is kept, sync resumes later."
     },
     "storage": {
       "title": "Storage",
       "persisted": "Protected from automatic cleanup",
       "notPersisted": "Browser may clear this data"
+    },
+    "sources": {
+      "title": "Measurement sources",
+      "name": "Name",
+      "site": "Site",
+      "siteHint": "Changing the site offers its default range.",
+      "colour": "Colour",
+      "marker": "Marker",
+      "range": "Valid range (°C)",
+      "min": "Minimum",
+      "max": "Maximum",
+      "applyRange": "Apply range",
+      "rangeInvalid": "Enter two temperatures, the minimum below the maximum."
+    },
+    "cycle": {
+      "title": "Cycle",
+      "intention": "Default intention",
+      "intentionHint": "Copied to new cycles. Existing cycles keep theirs.",
+      "startNumber": "Number of the first cycle",
+      "statsN": "N for shortest and longest"
+    },
+    "data": {
+      "title": "Data",
+      "csv": "Download CSV",
+      "json": "Download JSON",
+      "jsonError": "The JSON export failed. Check the connection.",
+      "jsonNeedsConnection": "Connect a device to export JSON.",
+      "queue": "Waiting to sync: {count}",
+      "failed": "Not accepted by the server",
+      "retry": "Retry",
+      "discard": "Discard"
     }
   },
   "csv": {
@@ -226,5 +301,94 @@
     "mucusMark": "Mucus mark",
     "chartNote": "Chart comment",
     "notes": "Notes"
+  },
+  "common": {
+    "close": "Close",
+    "more": "More"
+  },
+  "components": {
+    "save": {
+      "button": "Save",
+      "saved": "Saved",
+      "invalid": "Check the temperature",
+      "noReading": "This day has no reading for that source",
+      "rejected": "Not saved: the server rejected a change"
+    },
+    "clear": "Clear",
+    "yes": "Yes",
+    "no": "No",
+    "rise": {
+      "auto": "Automatic",
+      "yes": "Yes",
+      "no": "No"
+    },
+    "mucusInfo": {
+      "title": "Mucus definitions"
+    },
+    "temp": {
+      "clear": "Delete this reading",
+      "invalid": "Enter a value like 36.45",
+      "outOfRange": "Valid range {min} – {max}"
+    },
+    "dayForm": {
+      "temperature": "Temperature",
+      "bleeding": "Bleeding",
+      "mucus": "Mucus",
+      "symptoms": "Symptoms",
+      "qualityEmpty": "not recorded",
+      "auto": "auto",
+      "changed": "changed",
+      "reset": "Reset to automatic",
+      "mucusInfo": "Mucus definitions",
+      "marks": "Marks",
+      "noReadingForMark": "Enter a reading first",
+      "commentAndNotes": "Comment and notes",
+      "counter": "{count} / {max}"
+    }
+  },
+  "today": {
+    "cycleNo": "Cycle no.",
+    "today": "Today",
+    "openEntry": "Open the full entry",
+    "quickForm": "Quick entry",
+    "fullForm": "Full entry form"
+  },
+  "entry": {
+    "cycleDay": "Cycle day {day}",
+    "noCycle": "No cycle",
+    "back": "Back",
+    "previous": "Previous day",
+    "next": "Next day"
+  },
+  "calendar": {
+    "markingBanner": "Tap a day to set or remove a cycle start",
+    "markStarts": "Mark cycle starts",
+    "previousMonth": "Previous month",
+    "nextMonth": "Next month",
+    "legend": "Legend",
+    "legendStart": "Cycle day 1",
+    "legendPeak": "Mucus peak",
+    "legendHighlyFertile": "Highly fertile mucus",
+    "legendLessFertile": "Less fertile mucus",
+    "legendFertile": "Fertile days",
+    "legendReading": "Recorded reading (hollow = excluded)"
+  },
+  "stats": {
+    "totals": "Totals",
+    "overall": "All cycles",
+    "lastN": "Last {n} cycles",
+    "cycles": "Cycles",
+    "cycleNo": "No.",
+    "excluded": "excluded",
+    "count": "Count",
+    "average": "Average",
+    "min": "Min",
+    "max": "Max",
+    "sourceEvaluation": "Source evaluation",
+    "daysWithReading": "Days with a reading",
+    "missingDays": "Missing days",
+    "excludedReadings": "Excluded readings",
+    "cyclesWithRise": "Cycles with a rise",
+    "peakToThird": "Days from mucus peak to third high day"
   }
 }

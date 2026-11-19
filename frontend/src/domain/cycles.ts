@@ -62,6 +62,11 @@ export function cycleLength(cycle: Cycle, today: string): number {
   return daysBetween(cycle.start, cycle.end ?? today) + 1;
 }
 
+export function isFertileDay(cycle: Cycle, date: string): boolean {
+  const { fertile_start: start, fertile_end: end } = cycle.row;
+  return start !== null && end !== null && date >= start && date <= end;
+}
+
 export function completedLength(cycle: Cycle): number {
   return daysBetween(cycle.start, cycle.end ?? cycle.start) + 1;
 }

@@ -139,6 +139,11 @@ function scheduleRetry(): void {
 }
 
 // Returns the device label, or null when the server refuses the token.
+export async function fetchExport(token: string): Promise<string> {
+  const response = await request(token, '/api/export.json', { method: 'GET', headers: {} });
+  return response.text();
+}
+
 export async function fetchDevice(token: string): Promise<string | null> {
   try {
     const response = await request(token, '/api/me', { method: 'GET', headers: {} });

@@ -1,6 +1,6 @@
 import { applyOp } from './apply';
 import { loadStored, saveFailed, saveMeta, saveQueues, type Meta, type Theme } from './db';
-import { cancelRetry, fetchDevice, requestSync, splitToken } from './sync';
+import { cancelRetry, fetchDevice, fetchExport, requestSync, splitToken } from './sync';
 import { data, device, failed, lastSaved, meta, outbox, syncState, theme } from './state';
 import { detectLanguage, setLanguage, type Lang } from '../i18n';
 import type { Op } from '../domain/types';
@@ -86,11 +86,16 @@ export async function save(ops: Op[]): Promise<RejectedOp[]> {
   return rejected;
 }
 
-// Returns 'ok', 'invalid' for a malformed token, or 'rejected' when the server refuses it.
-export async function connect(token: string): Promise<'ok' | 'invalid' | 'rejected'> {
+// 'offline' keeps the token and retries on the next sync. 'rejected' drops it.
+export async function connect(token: string): Promise<'ok' | 'invalid' | 'rejected' | 'offline'> {
   if (!splitToken(token)) return 'invalid';
   await updateMeta({ token, etag: undefined });
-  const label = await fetchDevice(token);
+  let label: string | null;
+  try {
+    label = await fetchDevice(token);
+  } catch {
+    return 'offline';
+  }
   if (label === null) {
     await disconnect();
     return 'rejected';
@@ -130,6 +135,12 @@ export async function retryFailed(index: number): Promise<void> {
 export async function discardFailed(index: number): Promise<void> {
   failed.value = failed.value.filter((_, i) => i !== index);
   await saveFailed(failed.value);
+}
+
+export async function exportJson(): Promise<string> {
+  const token = meta.value.token;
+  if (!token) throw new Error('not connected');
+  return fetchExport(token);
 }
 
 export function syncNow(): Promise<void> {
