@@ -1,0 +1,87 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+@plugin "daisyui/theme" {
+  name: "coverline";
+  default: true;
+  prefersdark: false;
+  color-scheme: light;
+  --color-base-100: #ffffff;
+  --color-base-200: #faf6f1;
+  --color-base-300: #ece4da;
+  --color-base-content: #2b2520;
+  --color-primary: #6d4fc2;
+  --color-primary-content: #ffffff;
+  --color-secondary: #8c7b6b;
+  --color-secondary-content: #ffffff;
+  --color-accent: #2e9c84;
+  --color-accent-content: #ffffff;
+  --color-neutral: #3d342d;
+  --color-neutral-content: #faf6f1;
+  --color-info: #2563eb;
+  --color-info-content: #ffffff;
+  --color-success: #2e7d5b;
+  --color-success-content: #ffffff;
+  --color-warning: #b7791f;
+  --color-warning-content: #ffffff;
+  --color-error: #c2414b;
+  --color-error-content: #ffffff;
+  --radius-selector: 1rem;
+  --radius-field: 2rem;
+  --radius-box: 1rem;
+  --depth: 1;
+  --noise: 0;
+}
+
+@plugin "daisyui/theme" {
+  name: "coverline-dark";
+  default: false;
+  prefersdark: true;
+  color-scheme: dark;
+  --color-base-100: #24201d;
+  --color-base-200: #1a1715;
+  --color-base-300: #37312c;
+  --color-base-content: #ede6df;
+  --color-primary: #a48cf0;
+  --color-primary-content: #1a1715;
+  --color-secondary: #a89788;
+  --color-secondary-content: #1a1715;
+  --color-accent: #4fb9a0;
+  --color-accent-content: #1a1715;
+  --color-neutral: #ede6df;
+  --color-neutral-content: #1a1715;
+  --color-info: #6b9bf5;
+  --color-info-content: #1a1715;
+  --color-success: #5fbf8f;
+  --color-success-content: #1a1715;
+  --color-warning: #e0a94a;
+  --color-warning-content: #1a1715;
+  --color-error: #c2414b;
+  --color-error-content: #ffffff;
+  --radius-selector: 1rem;
+  --radius-field: 2rem;
+  --radius-box: 1rem;
+  --depth: 1;
+  --noise: 0;
+}
+
+@theme {
+  --color-bleed-staining: #a47551;
+  --color-bleed-spotting: #f2a7b5;
+  --color-bleed-light: #e57a91;
+  --color-bleed-medium: #d1456a;
+  --color-bleed-heavy: #a3123d;
+  --color-mucus-lf: #cdeee4;
+  --color-mucus-hf: #2e9c84;
+  --color-fertile: #e6defa;
+}
+
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@media print {
+  body {
+    background: #fff;
+  }
+}
