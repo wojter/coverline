@@ -274,8 +274,10 @@
       "title": "Cycle",
       "intention": "Default intention",
       "intentionHint": "Copied to new cycles. Existing cycles keep theirs.",
-      "startNumber": "Number of the first cycle",
-      "statsN": "N for shortest and longest"
+      "startNumber": "Number of the oldest recorded cycle",
+      "startNumberHint": "The oldest recorded cycle gets this number. Later cycles are numbered automatically by start date. Leave at 1 if you enter your full history.",
+      "statsN": "Number of cycles for shortest / longest",
+      "statsNHint": "Use this many recent completed cycles before the viewed cycle. Cycles excluded from stats are skipped."
     },
     "data": {
       "title": "Data",

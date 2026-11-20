@@ -173,6 +173,7 @@ function CycleCard() {
           <input type="number" min="1" inputMode="numeric" class="input w-full text-base tabular-nums" value={cycleStart} onInput={(e) => setCycleStart((e.target as HTMLInputElement).value)} />
           <button type="button" class="btn btn-outline min-h-11 rounded-full" onClick={() => setting('cycle_number_start', Number(cycleStart))}>{t('components.save.button')}</button>
         </div>
+        <p class="text-xs opacity-70">{t('settings.cycle.startNumberHint')}</p>
       </label>
       <label class="flex flex-col gap-1">
         <span class="text-sm font-semibold">{t('settings.cycle.statsN')}</span>
@@ -180,6 +181,7 @@ function CycleCard() {
           <input type="number" min="1" inputMode="numeric" class="input w-full text-base tabular-nums" value={statsN} onInput={(e) => setStatsN((e.target as HTMLInputElement).value)} />
           <button type="button" class="btn btn-outline min-h-11 rounded-full" onClick={() => setting('stats_n', Number(statsN))}>{t('components.save.button')}</button>
         </div>
+        <p class="text-xs opacity-70">{t('settings.cycle.statsNHint')}</p>
       </label>
     </Card>
   );
@@ -276,4 +278,3 @@ function ConnectionCard() {
 function stateKey(state: string): string {
   return state === 'not-connected' ? 'notConnected' : state;
 }
-

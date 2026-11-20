@@ -274,8 +274,10 @@
       "title": "Cykl",
       "intention": "Domyślny cel",
       "intentionHint": "Kopiowany do nowych cykli. Istniejące cykle zachowują swój.",
-      "startNumber": "Numer pierwszego cyklu",
-      "statsN": "N dla najkrótszego i najdłuższego"
+      "startNumber": "Numer najstarszego zapisanego cyklu",
+      "startNumberHint": "Najstarszy zapisany cykl otrzyma ten numer. Kolejne są numerowane automatycznie według dat początku. Zostaw 1, jeśli wprowadzasz całą historię.",
+      "statsN": "Liczba cykli do obliczenia najkrótszego i najdłuższego",
+      "statsNHint": "Uwzględnij tyle ostatnich zakończonych cykli przed oglądanym cyklem. Cykle pominięte w statystykach są ignorowane."
     },
     "data": {
       "title": "Dane",
