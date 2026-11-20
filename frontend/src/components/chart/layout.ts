@@ -11,7 +11,7 @@ export const CHART = {
   minColumns: 40,
   defaultMin: 3600,
   defaultMax: 3730,
-  noteFontSize: 9,
+  noteFontSize: 12,
 } as const;
 
 export interface Reading {
@@ -146,6 +146,16 @@ export function tempTicks(scale: TempScale): { value: number; labelled: boolean 
     ticks.push({ value, labelled: value % 10 === 0 });
   }
   return ticks;
+}
+
+// Alternating shaded bands, like the paper card: the band from x.00 up to x.05 is shaded, x.05 up to x.10 is not.
+// y is measured from the top of the temperature row.
+export function tempBands(scale: TempScale): { y: number; height: number }[] {
+  const bands: { y: number; height: number }[] = [];
+  for (let low = scale.min; low < scale.max; low += CHART.tempStepValue) {
+    if (low % 10 === 0) bands.push({ y: tempY(scale, low + CHART.tempStepValue), height: CHART.tempStep });
+  }
+  return bands;
 }
 
 export function columnCenter(index: number): number {

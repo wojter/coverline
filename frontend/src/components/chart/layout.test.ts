@@ -7,6 +7,7 @@ import {
   mucusRowMatch,
   noteCharLimit,
   rowLayout,
+  tempBands,
   tempY,
   temperatureScale,
   truncateNote,
@@ -30,6 +31,16 @@ describe('chartDays', () => {
   it('runs to today for an open cycle', () => {
     const days = chartDays('2026-10-24', null, '2026-11-19');
     expect(days.at(-1)).toBe('2026-12-02');
+  });
+});
+
+describe('tempBands', () => {
+  it('shades every other 0.05 step, starting at x.00', () => {
+    const scale = { min: 3600, max: 3730 };
+    const bands = tempBands(scale);
+    expect(bands).toHaveLength(13);
+    expect(bands[0]).toEqual({ y: tempY(scale, 3605), height: CHART.tempStep });
+    expect(bands.at(-1)).toEqual({ y: tempY(scale, 3725), height: CHART.tempStep });
   });
 });
 

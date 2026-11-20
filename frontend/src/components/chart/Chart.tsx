@@ -1,4 +1,4 @@
-import { CHART, chartDays, chartHeight, columnCenter, curveSegments, mucusRowMatch, noteCharLimit, rowLayout, tempTicks, tempY, temperatureScale, truncateNote, valueAtY, type Reading, type RowKey, type TempScale } from './layout';
+import { CHART, chartDays, chartHeight, columnCenter, curveSegments, mucusRowMatch, noteCharLimit, rowLayout, tempBands, tempTicks, tempY, temperatureScale, truncateNote, valueAtY, type Reading, type RowKey, type TempScale } from './layout';
 import { isFertileDay, type Cycle } from '../../domain/cycles';
 import { SOURCE_IDS, type DayRow, type Marker, type SourceId, type SourceRow, type TempRow } from '../../domain/types';
 import { formatTemp, t } from '../../i18n';
@@ -111,6 +111,9 @@ export function Chart(props: ChartProps) {
 function LabelsLayer({ model, props }: { model: Model; props: ChartProps }) {
   return (
     <g class="fill-base-content text-[10px]">
+      {tempBands(model.scale).map((band) => (
+        <rect key={`band-${band.y}`} x="0" y={rowTop(model, 'temp') + band.y} width={CHART.labelWidth} height={band.height} class="fill-base-content opacity-[0.1]" />
+      ))}
       {model.rows.map((row) => {
         const y = row.y + row.height / 2;
         return (
@@ -171,6 +174,9 @@ function GridLayer({ model, props }: { model: Model; props: ChartProps }) {
           <line x1="0" y1="0" x2="0" y2="5" stroke="#4b3c7a" stroke-width="1.6" />
         </pattern>
       </defs>
+      {tempBands(model.scale).map((band) => (
+        <rect key={`band-${band.y}`} x="0" y={tempTop + band.y} width={model.width} height={band.height} class="fill-base-content opacity-[0.1]" />
+      ))}
       {model.columns.map((date, index) => {
         const x = index * W;
         return (
@@ -181,8 +187,12 @@ function GridLayer({ model, props }: { model: Model; props: ChartProps }) {
         );
       })}
       {tempTicks(model.scale).map((tick) => (
-        <line key={`tick-${tick.value}`} x1="0" x2={model.width} y1={tempTop + tempY(model.scale, tick.value)} y2={tempTop + tempY(model.scale, tick.value)} stroke="var(--color-base-300)" stroke-width={tick.labelled ? 1 : 0.5} stroke-dasharray={tick.labelled ? undefined : '1 3'} />
+        <line key={`tick-${tick.value}`} x1="0" x2={model.width} y1={tempTop + tempY(model.scale, tick.value)} y2={tempTop + tempY(model.scale, tick.value)} stroke="var(--color-base-content)" stroke-opacity={tick.labelled ? 0.4 : 0.22} stroke-width={tick.labelled ? 1 : 0.75} />
       ))}
+      {model.columns.map((date, index) => (
+        <line key={`day-${date}`} x1={index * W} x2={index * W} y1="0" y2={H} stroke="var(--color-base-content)" stroke-opacity="0.3" stroke-width="0.75" />
+      ))}
+      <line x1={model.width} x2={model.width} y1="0" y2={H} stroke="var(--color-base-content)" stroke-opacity="0.3" stroke-width="0.75" />
       {model.rows.map((row) => (
         <line key={`sep-${row.key}`} x1="0" x2={model.width} y1={row.y} y2={row.y} stroke="var(--color-base-300)" stroke-width="0.5" />
       ))}
@@ -197,14 +207,14 @@ function GridLayer({ model, props }: { model: Model; props: ChartProps }) {
         if (!note) return null;
         const limit = noteCharLimit(tempHeight);
         return (
-          <text key={`note-${date}`} transform={`translate(${columnCenter(index) + 3} ${tempTop + 4}) rotate(-90)`} text-anchor="end" dominant-baseline="middle" font-size={CHART.noteFontSize} class="fill-base-content opacity-50">
+          <text key={`note-${date}`} transform={`translate(${columnCenter(index) + 3} ${tempTop + 4}) rotate(-90)`} text-anchor="end" dominant-baseline="middle" font-size={CHART.noteFontSize} font-weight="600" class="fill-base-content opacity-75">
             {truncateNote(note, limit)}
           </text>
         );
       })}
       {SOURCE_IDS.filter((s) => visible[s]).map((source) =>
         curveSegments(model.readings[source], (value) => tempTop + tempY(model.scale, value)).map((segment, i) => (
-          <polyline key={`curve-${source}-${i}`} points={segment.map((p) => `${p.x},${p.y}`).join(' ')} fill="none" stroke={data.sources[source].color} stroke-width="2" stroke-dasharray={mode === 'print' && source === '2' ? '5 3' : undefined} />
+          <polyline key={`curve-${source}-${i}`} points={segment.map((p) => `${p.x},${p.y}`).join(' ')} fill="none" stroke={data.sources[source].color} stroke-width="1.5" stroke-dasharray={mode === 'print' && source === '2' ? '5 3' : undefined} />
         )),
       )}
       {SOURCE_IDS.filter((s) => visible[s]).map((source) =>
@@ -218,10 +228,10 @@ function GridLayer({ model, props }: { model: Model; props: ChartProps }) {
           const disturbed = (data.days[date]?.disturbances ?? []).length > 0;
           return (
             <g key={`point-${source}-${date}`}>
-              {disturbed && <circle cx={cx} cy={cy} r="7" fill="none" stroke="var(--color-base-content)" stroke-width="1" stroke-dasharray="2 2" />}
-              <Shape marker={row.marker} x={cx} y={cy} size={5} fill={reading.excluded ? 'var(--color-base-100)' : row.color} stroke={row.color} />
+              {disturbed && <circle cx={cx} cy={cy} r="5" fill="none" stroke="var(--color-base-content)" stroke-width="1" stroke-dasharray="2 2" />}
+              <Shape marker={row.marker} x={cx} y={cy} size={3} fill={reading.excluded ? 'var(--color-base-100)' : row.color} stroke={row.color} />
               {mark && (
-                <text x={cx} y={cy - 8} text-anchor="middle" font-size="9" font-weight="700" fill={row.color}>
+                <text x={cx} y={cy - 6} text-anchor="middle" font-size="9" font-weight="700" fill={row.color}>
                   {mark}
                 </text>
               )}
@@ -277,7 +287,7 @@ function RowSymbols({ date, index, model, data, cycle }: { date: string; index: 
 }
 
 function Shape({ marker, x, y, size, fill, stroke }: { marker: Marker; x: number; y: number; size: number; fill: string; stroke: string }) {
-  const common = { fill, stroke, 'stroke-width': 1.5 };
+  const common = { fill, stroke, 'stroke-width': 1.25 };
   if (marker === 'square') return <rect x={x - size} y={y - size} width={size * 2} height={size * 2} {...common} />;
   if (marker === 'triangle') return <path d={`M ${x} ${y - size - 1} L ${x + size + 1} ${y + size} L ${x - size - 1} ${y + size} Z`} {...common} />;
   if (marker === 'diamond') return <path d={`M ${x} ${y - size - 1} L ${x + size + 1} ${y} L ${x} ${y + size + 1} L ${x - size - 1} ${y} Z`} {...common} />;
