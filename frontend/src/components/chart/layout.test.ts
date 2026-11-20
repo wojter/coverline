@@ -6,7 +6,9 @@ import {
   curveSegments,
   mucusRowMatch,
   noteCharLimit,
+  ROW_KEYS,
   rowLayout,
+  rowTint,
   tempBands,
   tempY,
   temperatureScale,
@@ -34,43 +36,56 @@ describe('chartDays', () => {
   });
 });
 
+describe('rowTint', () => {
+  it('shades peak and fertile darker, highly fertile mucus rows lighter, and keeps cycleDay and bleeding white', () => {
+    const shaded = ROW_KEYS.filter((key) => rowTint(key) !== null);
+    expect(shaded).toEqual(['peak', 'wet', 'stretchy', 'clear', 'fertile']);
+    expect(rowTint('peak')?.opacity).toBeGreaterThan(rowTint('wet')?.opacity ?? 0);
+    expect(rowTint('fertile')?.opacity).toBe(rowTint('peak')?.opacity);
+    expect(rowTint('cycleDay')).toBeNull();
+    expect(rowTint('bleeding')).toBeNull();
+  });
+});
+
 describe('tempBands', () => {
-  it('shades every other 0.05 step, starting at x.00', () => {
-    const scale = { min: 3600, max: 3730 };
+  it('shades every x.00 row from max down to min', () => {
+    const scale = { min: 3580, max: 3720 };
     const bands = tempBands(scale);
-    expect(bands).toHaveLength(13);
-    expect(bands[0]).toEqual({ y: tempY(scale, 3605), height: CHART.tempStep });
-    expect(bands.at(-1)).toEqual({ y: tempY(scale, 3725), height: CHART.tempStep });
+    expect(bands).toHaveLength(15);
+    expect(bands[0]).toEqual({ y: 0, height: CHART.tempStep });
+    expect(bands.at(-1)).toEqual({ y: 28 * CHART.tempStep, height: CHART.tempStep });
   });
 });
 
 describe('temperatureScale', () => {
-  it('keeps the default scale when every reading fits', () => {
-    expect(temperatureScale([3630, 3690])).toEqual({ min: 3600, max: 3730 });
+  it('keeps the 35.80–37.20 default scale when every reading is at least 0.10 away from the edges', () => {
+    expect(temperatureScale([])).toEqual({ min: 3580, max: 3720 });
+    expect(temperatureScale([3590, 3710])).toEqual({ min: 3580, max: 3720 });
   });
 
-  it('widens in 0.05 steps to fit readings outside the default', () => {
-    expect(temperatureScale([3548, 3762])).toEqual({ min: 3545, max: 3765 });
+  it('widens in 0.05 steps when a reading is closer than 0.10 to the edge or outside', () => {
+    expect(temperatureScale([3585, 3715])).toEqual({ min: 3575, max: 3725 });
+    expect(temperatureScale([3548, 3762])).toEqual({ min: 3535, max: 3775 });
   });
 });
 
 describe('row layout', () => {
   it('stacks rows in card order and sizes the temperature row from the scale', () => {
-    const scale = { min: 3600, max: 3730 };
+    const scale = { min: 3580, max: 3720 };
     const rows = rowLayout(scale);
     expect(rows.map((r) => r.key).slice(0, 3)).toEqual(['date', 'temp', 'cycleDay']);
     const temp = rows.find((r) => r.key === 'temp');
-    expect(temp?.height).toBe((130 / 5) * CHART.tempStep);
+    expect(temp?.height).toBe((140 / 5 + 1) * CHART.tempStep);
     expect(rows.at(-1)?.key).toBe('disturbances');
     rows.slice(1).forEach((row, i) => expect(row.y).toBe(rows[i].y + rows[i].height));
   });
 
-  it('maps temperatures top-down and back', () => {
-    const scale = { min: 3600, max: 3730 };
-    expect(tempY(scale, 3730)).toBe(0);
+  it('maps temperatures to the center of their 0.05 row and back', () => {
+    const scale = { min: 3580, max: 3720 };
+    expect(tempY(scale, 3720)).toBe(CHART.tempStep / 2);
     expect(tempY(scale, 3650)).toBeGreaterThan(tempY(scale, 3700));
     expect(valueAtY(scale, tempY(scale, 3645))).toBe(3645);
-    expect(valueAtY(scale, -100)).toBe(3730);
+    expect(valueAtY(scale, -100)).toBe(3720);
   });
 });
 

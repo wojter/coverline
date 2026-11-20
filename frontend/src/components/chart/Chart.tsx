@@ -1,4 +1,4 @@
-import { CHART, chartDays, chartHeight, columnCenter, curveSegments, mucusRowMatch, noteCharLimit, rowLayout, tempBands, tempTicks, tempY, temperatureScale, truncateNote, valueAtY, type Reading, type RowKey, type TempScale } from './layout';
+import { CHART, chartDays, chartHeight, columnCenter, curveSegments, mucusRowMatch, noteCharLimit, rowLayout, rowTint, tempBands, tempTicks, tempY, temperatureScale, truncateNote, valueAtY, type Reading, type RowKey, type TempScale } from './layout';
 import { isFertileDay, type Cycle } from '../../domain/cycles';
 import { SOURCE_IDS, type DayRow, type Marker, type SourceId, type SourceRow, type TempRow } from '../../domain/types';
 import { formatTemp, t } from '../../i18n';
@@ -34,6 +34,10 @@ interface Model {
   readings: Record<SourceId, (Reading | undefined)[]>;
 }
 
+function inCycleRange(cycle: Cycle, date: string): boolean {
+  return date >= cycle.start && (cycle.end === null || date <= cycle.end);
+}
+
 function buildModel(props: ChartProps): Model {
   const { cycle, data, today } = props;
   const columns = chartDays(cycle.start, cycle.end, today);
@@ -41,6 +45,7 @@ function buildModel(props: ChartProps): Model {
   const readings = { '1': [], '2': [] } as Record<SourceId, (Reading | undefined)[]>;
   for (const source of SOURCE_IDS) {
     readings[source] = columns.map((date) => {
+      if (!inCycleRange(cycle, date)) return undefined;
       const row = data.temps[`${date}/${source}`];
       if (row) all.push(row.value);
       return row ? { value: row.value, excluded: row.excluded } : undefined;
@@ -75,8 +80,7 @@ export function labelFor(row: RowKey): string {
     ovulationPain: 'codes.symptom.ovulation_pain',
     breastTension: 'codes.symptom.breast_tension',
     fertile: 'chart.fertileDays',
-    morning: 'codes.intercourse.morning',
-    evening: 'codes.intercourse.evening',
+    intercourse: 'chart.intercourse',
     disturbances: 'chart.disturbances',
   };
   return t(keys[row]);
@@ -108,27 +112,99 @@ export function Chart(props: ChartProps) {
   );
 }
 
-function LabelsLayer({ model, props }: { model: Model; props: ChartProps }) {
+const MUCUS_GROUP_KEYS: ReadonlySet<RowKey> = new Set(['wet', 'stretchy', 'clear', 'moist', 'sticky', 'cloudy', 'dry']);
+
+function LabelsLayer({ model }: { model: Model; props: ChartProps }) {
+  const tempTop = rowTop(model, 'temp');
+  const tempH = model.rows.find((row) => row.key === 'temp')?.height ?? 0;
+  const scaleLeft = CHART.groupHeaderWidth;
+  const scaleWidth = CHART.labelWidth - scaleLeft;
+  const mucusTop = rowTop(model, 'wet');
+  const mucusH = 7 * CHART.symbolRow;
   return (
     <g class="fill-base-content text-[10px]">
+      <rect x="0" y={tempTop} width={scaleLeft} height={tempH} class="fill-base-content" fill-opacity={CHART.lightTint} />
       {tempBands(model.scale).map((band) => (
-        <rect key={`band-${band.y}`} x="0" y={rowTop(model, 'temp') + band.y} width={CHART.labelWidth} height={band.height} class="fill-base-content opacity-[0.1]" />
+        <rect key={`band-${band.y}`} x={scaleLeft} y={tempTop + band.y} width={scaleWidth} height={band.height} class="fill-base-content" fill-opacity={CHART.lightTint} />
       ))}
-      {model.rows.map((row) => {
-        const y = row.y + row.height / 2;
-        return (
-          <text key={row.key} x="6" y={y} dominant-baseline="middle" class="text-[10px] font-medium">
-            {labelFor(row.key)}
-          </text>
-        );
-      })}
+      <rect x="0" y={mucusTop} width={CHART.groupHeaderWidth} height={mucusH} class="fill-base-content" fill-opacity={CHART.lightTint} />
+      <RowTints model={model} width={CHART.labelWidth} mucusOffset={CHART.groupHeaderWidth} />
+      {tempTicks(model.scale)
+        .filter((tick) => tick.top > 0)
+        .map((tick) => (
+          <line key={`ltick-${tick.value}`} x1={scaleLeft} x2={CHART.labelWidth} y1={tempTop + tick.top} y2={tempTop + tick.top} stroke="var(--color-base-content)" stroke-opacity="0.35" stroke-width="0.75" />
+        ))}
+      <line x1={scaleLeft} x2={scaleLeft} y1={tempTop} y2={tempTop + tempH} stroke="var(--color-base-content)" stroke-opacity="0.45" stroke-width="0.75" />
+      <line x1={CHART.groupHeaderWidth} x2={CHART.groupHeaderWidth} y1={mucusTop} y2={mucusTop + mucusH} stroke="var(--color-base-content)" stroke-opacity="0.45" stroke-width="0.75" />
+      <RowLines model={model} width={CHART.labelWidth} mucusOffset={CHART.groupHeaderWidth} />
+      <line x1="0.5" x2="0.5" y1="0" y2={model.height} stroke="var(--color-base-content)" stroke-opacity="0.5" stroke-width="1" />
+      <line x1={CHART.labelWidth - 0.5} x2={CHART.labelWidth - 0.5} y1="0" y2={model.height} stroke="var(--color-base-content)" stroke-opacity="0.5" stroke-width="1" />
+      <text transform={`translate(${scaleLeft / 2} ${tempTop + tempH / 2}) rotate(-90)`} text-anchor="middle" dominant-baseline="middle" class="text-[10px] font-bold tracking-wider uppercase">
+        {labelFor('temp')}
+      </text>
+      <text transform={`translate(${CHART.groupHeaderWidth / 2} ${mucusTop + mucusH / 2}) rotate(-90)`} text-anchor="middle" dominant-baseline="middle" class="text-[10px] font-bold tracking-wider uppercase">
+        {t('chart.track.mucus')}
+      </text>
+      {model.rows
+        .filter((row) => row.key !== 'temp')
+        .map((row) => {
+          const y = row.y + row.height / 2;
+          const bold = row.key === 'cycleDay' || row.key === 'peak' || row.key === 'fertile';
+          const x = MUCUS_GROUP_KEYS.has(row.key) ? CHART.groupHeaderWidth + 5 : 6;
+          return (
+            <text key={row.key} x={x} y={y} dominant-baseline="middle" class={`text-[9.5px] ${bold ? 'font-bold' : 'font-medium'}`}>
+              {labelFor(row.key)}
+            </text>
+          );
+        })}
       {tempTicks(model.scale)
         .filter((tick) => tick.labelled)
         .map((tick) => (
-          <text key={tick.value} x={CHART.labelWidth - 6} y={rowTop(model, 'temp') + tempY(model.scale, tick.value)} text-anchor="end" dominant-baseline="middle" class="text-[9px] opacity-70 tabular-nums">
+          <text key={tick.value} x={scaleLeft + scaleWidth / 2} y={tempTop + tick.center} text-anchor="middle" dominant-baseline="middle" class="text-[8.5px] font-medium opacity-90 tabular-nums">
             {formatTemp(tick.value)}
           </text>
         ))}
+    </g>
+  );
+}
+
+function RowTints({ model, width, mucusOffset = 0 }: { model: Model; width: number; mucusOffset?: number }) {
+  return (
+    <g>
+      {model.rows.map((row) => {
+        const tint = rowTint(row.key);
+        if (!tint) return null;
+        const x = MUCUS_GROUP_KEYS.has(row.key) ? mucusOffset : 0;
+        return <rect key={`tint-${row.key}`} x={x} y={row.y} width={width - x} height={row.height} class="fill-base-content" fill-opacity={tint.opacity} />;
+      })}
+    </g>
+  );
+}
+
+const FRAMED_ROWS: ReadonlySet<RowKey> = new Set(['cycleDay', 'fertile']);
+
+function RowLines({ model, width, mucusOffset = 0 }: { model: Model; width: number; mucusOffset?: number }) {
+  return (
+    <g>
+      {model.rows.map((row, i) => {
+        const prev = model.rows[i - 1];
+        const strong = FRAMED_ROWS.has(row.key) || (prev !== undefined && FRAMED_ROWS.has(prev.key));
+        const inset = MUCUS_GROUP_KEYS.has(row.key) && prev !== undefined && MUCUS_GROUP_KEYS.has(prev.key);
+        const x1 = inset ? mucusOffset : 0;
+        return (
+          <line
+            key={`sep-${row.key}`}
+            x1={x1}
+            x2={width}
+            y1={row.y || 0.5}
+            y2={row.y || 0.5}
+            stroke="var(--color-base-content)"
+            stroke-opacity={strong ? 0.85 : 0.42}
+            stroke-width={strong ? 1.5 : 0.75}
+          />
+        );
+      })}
+      <line x1="0" x2={width} y1={model.height - 0.5} y2={model.height - 0.5} stroke="var(--color-base-content)" stroke-opacity="0.5" stroke-width="1" />
     </g>
   );
 }
@@ -170,32 +246,33 @@ function GridLayer({ model, props }: { model: Model; props: ChartProps }) {
     <g>
       <defs>
         <pattern id="fertile-hatch" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-          <rect width="5" height="5" fill="#ffffff" />
-          <line x1="0" y1="0" x2="0" y2="5" stroke="#4b3c7a" stroke-width="1.6" />
+          <line x1="0" y1="0" x2="0" y2="5" stroke="var(--color-base-content)" stroke-opacity="0.45" stroke-width="1.2" />
         </pattern>
       </defs>
       {tempBands(model.scale).map((band) => (
-        <rect key={`band-${band.y}`} x="0" y={tempTop + band.y} width={model.width} height={band.height} class="fill-base-content opacity-[0.1]" />
+        <rect key={`band-${band.y}`} x="0" y={tempTop + band.y} width={model.width} height={band.height} class="fill-base-content" fill-opacity={CHART.lightTint} />
       ))}
+      <RowTints model={model} width={model.width} />
       {model.columns.map((date, index) => {
         const x = index * W;
+        const fertileY = rowTop(model, 'fertile');
         return (
           <g key={`col-${date}`}>
-            {isFertileDay(cycle, date) && (mode === 'print' ? <rect x={x} y="0" width={W} height={H} fill="url(#fertile-hatch)" /> : <rect x={x} y="0" width={W} height={H} class="fill-fertile opacity-60" />)}
+            {isFertileDay(cycle, date) && <rect x={x} y={fertileY} width={W} height={CHART.symbolRow} fill="url(#fertile-hatch)" />}
             {date === today && <rect class="print:hidden" x={x + 1} y="1" width={W - 2} height={H - 2} fill="none" stroke="var(--color-primary)" stroke-width="1.5" />}
           </g>
         );
       })}
-      {tempTicks(model.scale).map((tick) => (
-        <line key={`tick-${tick.value}`} x1="0" x2={model.width} y1={tempTop + tempY(model.scale, tick.value)} y2={tempTop + tempY(model.scale, tick.value)} stroke="var(--color-base-content)" stroke-opacity={tick.labelled ? 0.4 : 0.22} stroke-width={tick.labelled ? 1 : 0.75} />
-      ))}
-      {model.columns.map((date, index) => (
-        <line key={`day-${date}`} x1={index * W} x2={index * W} y1="0" y2={H} stroke="var(--color-base-content)" stroke-opacity="0.3" stroke-width="0.75" />
-      ))}
-      <line x1={model.width} x2={model.width} y1="0" y2={H} stroke="var(--color-base-content)" stroke-opacity="0.3" stroke-width="0.75" />
-      {model.rows.map((row) => (
-        <line key={`sep-${row.key}`} x1="0" x2={model.width} y1={row.y} y2={row.y} stroke="var(--color-base-300)" stroke-width="0.5" />
-      ))}
+      {tempTicks(model.scale)
+        .filter((tick) => tick.top > 0)
+        .map((tick) => (
+          <line key={`tick-${tick.value}`} x1="0" x2={model.width} y1={tempTop + tick.top} y2={tempTop + tick.top} stroke="var(--color-base-content)" stroke-opacity="0.32" stroke-width="0.75" />
+        ))}
+      {model.columns.map((date, index) =>
+        index > 0 ? <line key={`day-${date}`} x1={index * W} x2={index * W} y1="0" y2={H} stroke="var(--color-base-content)" stroke-opacity="0.4" stroke-width="0.75" /> : null,
+      )}
+      <line x1={model.width - 0.5} x2={model.width - 0.5} y1="0" y2={H} stroke="var(--color-base-content)" stroke-opacity="0.5" stroke-width="1" />
+      <RowLines model={model} width={model.width} />
       {SOURCE_IDS.filter((s) => visible[s]).map((source) => {
         const coverline = cycle.row[source === '1' ? 'coverline_1' : 'coverline_2'];
         if (coverline === null) return null;
@@ -203,6 +280,7 @@ function GridLayer({ model, props }: { model: Model; props: ChartProps }) {
         return <line key={`cover-${source}`} x1="0" x2={model.width} y1={y} y2={y} stroke={data.sources[source].color} stroke-width="1.5" stroke-dasharray={source === '1' ? '6 4' : '2 3'} />;
       })}
       {model.columns.map((date, index) => {
+        if (!inCycleRange(cycle, date)) return null;
         const note = data.days[date]?.chart_note;
         if (!note) return null;
         const limit = noteCharLimit(tempHeight);
@@ -228,10 +306,10 @@ function GridLayer({ model, props }: { model: Model; props: ChartProps }) {
           const disturbed = (data.days[date]?.disturbances ?? []).length > 0;
           return (
             <g key={`point-${source}-${date}`}>
-              {disturbed && <circle cx={cx} cy={cy} r="5" fill="none" stroke="var(--color-base-content)" stroke-width="1" stroke-dasharray="2 2" />}
-              <Shape marker={row.marker} x={cx} y={cy} size={3} fill={reading.excluded ? 'var(--color-base-100)' : row.color} stroke={row.color} />
+              {disturbed && <circle cx={cx} cy={cy} r="4.5" fill="none" stroke="var(--color-base-content)" stroke-width="1" stroke-dasharray="2 2" />}
+              <Shape marker={row.marker} x={cx} y={cy} size={2.5} fill={reading.excluded ? 'var(--color-base-100)' : row.color} stroke={row.color} />
               {mark && (
-                <text x={cx} y={cy - 6} text-anchor="middle" font-size="9" font-weight="700" fill={row.color}>
+                <text x={cx} y={cy - 5} text-anchor="middle" font-size="9" font-weight="700" fill={row.color}>
                   {mark}
                 </text>
               )}
@@ -246,22 +324,32 @@ function GridLayer({ model, props }: { model: Model; props: ChartProps }) {
   );
 }
 
+function intercourseSymbol(day: DayRow | undefined): string | null {
+  const hasMorning = day?.intercourse?.includes('morning') ?? false;
+  const hasEvening = day?.intercourse?.includes('evening') ?? false;
+  if (hasMorning && hasEvening) return 'X/X';
+  if (hasMorning) return 'X/';
+  if (hasEvening) return '/X';
+  return null;
+}
+
 function RowSymbols({ date, index, model, data, cycle }: { date: string; index: number; model: Model; data: ChartData; cycle: Cycle }) {
-  const day = data.days[date];
+  const inCycle = inCycleRange(cycle, date);
+  const day = inCycle ? data.days[date] : undefined;
   const cx = columnCenter(index);
   const y = (key: RowKey) => rowTop(model, key) + CHART.symbolRow / 2;
-  const inCycle = date >= cycle.start && (cycle.end === null || date <= cycle.end);
-  const cycleDay = inCycle ? index - model.columns.indexOf(cycle.start) + 1 : null;
+  const cycleDay = index + 1;
+  const intercourse = intercourseSymbol(day);
   return (
     <g>
-      {cycleDay !== null && (
-        <text x={cx} y={y('cycleDay')} text-anchor="middle" dominant-baseline="middle" font-size="10" class="fill-base-content tabular-nums">
-          {cycleDay}
+      <text x={cx} y={y('cycleDay')} text-anchor="middle" dominant-baseline="middle" font-size="10" class="fill-base-content tabular-nums">
+        {cycleDay}
+      </text>
+      {inCycle && (
+        <text x={cx} y={y('date')} text-anchor="middle" dominant-baseline="middle" font-size="9" class="fill-base-content tabular-nums">
+          {date.slice(8)}
         </text>
       )}
-      <text x={cx} y={y('date')} text-anchor="middle" dominant-baseline="middle" font-size="9" class="fill-base-content tabular-nums">
-        {date.slice(8)}
-      </text>
       {day?.bleeding && (
         <text x={cx} y={y('bleeding')} text-anchor="middle" dominant-baseline="middle" font-size="10" font-weight="700" class="fill-base-content">
           {t(`codes.bleedingSymbol.${day.bleeding}`)}
@@ -278,17 +366,19 @@ function RowSymbols({ date, index, model, data, cycle }: { date: string; index: 
       {day?.mucus_atypical === true && <path d={`M ${cx} ${y('atypical') - 4} L ${cx + 4} ${y('atypical')} L ${cx} ${y('atypical') + 4} L ${cx - 4} ${y('atypical')} Z`} class="fill-base-content" />}
       {day?.symptoms?.includes('ovulation_pain') && <circle cx={cx} cy={y('ovulationPain')} r="3" class="fill-base-content" />}
       {day?.symptoms?.includes('breast_tension') && <path d={`M ${cx} ${y('breastTension') - 3.5} L ${cx + 3.5} ${y('breastTension') + 3} L ${cx - 3.5} ${y('breastTension') + 3} Z`} class="fill-base-content" />}
-      {isFertileDay(cycle, date) && <rect x={cx - 6} y={y('fertile') - 4} width="12" height="8" class="fill-fertile stroke-base-content" stroke-width="0.5" />}
-      {day?.intercourse?.includes('morning') && <rect x={cx - 3} y={y('morning') - 3} width="6" height="6" class="fill-base-content" />}
-      {day?.intercourse?.includes('evening') && <path d={`M ${cx} ${y('evening') - 3.5} L ${cx + 3.5} ${y('evening') + 3} L ${cx - 3.5} ${y('evening') + 3} Z`} class="fill-base-content" />}
+      {intercourse && (
+        <text x={cx} y={y('intercourse')} text-anchor="middle" dominant-baseline="middle" font-size="9.5" font-weight="700" class="fill-base-content">
+          {intercourse}
+        </text>
+      )}
       {(day?.disturbances ?? []).length > 0 && <circle cx={cx} cy={y('disturbances')} r="3.5" fill="none" class="stroke-base-content" stroke-width="1.5" />}
     </g>
   );
 }
 
 function Shape({ marker, x, y, size, fill, stroke }: { marker: Marker; x: number; y: number; size: number; fill: string; stroke: string }) {
-  const common = { fill, stroke, 'stroke-width': 1.25 };
-  if (marker === 'square') return <rect x={x - size} y={y - size} width={size * 2} height={size * 2} {...common} />;
+  const common = { fill, stroke, 'stroke-width': 1 };
+  if (marker === 'square') return <rect x={x - size * 0.8} y={y - size * 0.8} width={size * 1.6} height={size * 1.6} {...common} />;
   if (marker === 'triangle') return <path d={`M ${x} ${y - size - 1} L ${x + size + 1} ${y + size} L ${x - size - 1} ${y + size} Z`} {...common} />;
   if (marker === 'diamond') return <path d={`M ${x} ${y - size - 1} L ${x + size + 1} ${y} L ${x} ${y + size + 1} L ${x - size - 1} ${y} Z`} {...common} />;
   return <circle cx={x} cy={y} r={size} {...common} />;
