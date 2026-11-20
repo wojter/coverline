@@ -35,7 +35,7 @@ export default function ChartView({ date }: { date?: string }) {
   const cycle = hit?.cycle ?? (date ? null : (list.at(-1) ?? null));
 
   useEffect(() => {
-    if (date && hit && hit.cycle.start !== date) route(`/karta/${hit.cycle.start}`, true);
+    if (date && hit && hit.cycle.start !== date) route(`/chart/${hit.cycle.start}`, true);
   }, [date, hit?.cycle.start]);
 
   if (!cycle) {
@@ -43,7 +43,7 @@ export default function ChartView({ date }: { date?: string }) {
       <div class="flex flex-col gap-3">
         <Heading title={t('nav.chart')} />
         <p class="text-sm">{date ? t('chart.noCycleForDate') : t('chart.noCycles')}</p>
-        <a href="/kalendarz" class="btn btn-outline min-h-11 rounded-full self-start">{t('nav.calendar')}</a>
+        <a href="/calendar" class="btn btn-outline min-h-11 rounded-full self-start">{t('nav.calendar')}</a>
       </div>
     );
   }
@@ -89,7 +89,7 @@ function CycleScreen({ cycle, today: now }: { cycle: Cycle; today: string }) {
   function onGridTap(tap: GridTap) {
     setMessage(null);
     if (tap.note) return setNote(tap.date);
-    if (mode === 'normal') return route(`/wpis/${tap.date}`);
+    if (mode === 'normal') return route(`/entry/${tap.date}`);
     if (mode === 'coverline' && tap.row === 'temp' && tap.value !== null) {
       return act([{ entity: 'cycle', key: cycle.id, set: { [`coverline_${source}`]: tap.value } }]);
     }
@@ -130,7 +130,7 @@ function CycleScreen({ cycle, today: now }: { cycle: Cycle; today: string }) {
       <Heading title={t('nav.chart')} />
       <section class="card flex flex-row items-center justify-between gap-2 rounded-box border border-base-300 bg-base-100 p-3 print:hidden">
         {previous ? (
-          <a href={`/karta/${previous.start}`} class="btn btn-ghost btn-circle min-h-11 min-w-11" aria-label={t('chart.previousCycle')}>
+          <a href={`/chart/${previous.start}`} class="btn btn-ghost btn-circle min-h-11 min-w-11" aria-label={t('chart.previousCycle')}>
             <ChevronLeft size={20} aria-hidden="true" />
           </a>
         ) : <span class="min-h-11 min-w-11" />}
@@ -145,7 +145,7 @@ function CycleScreen({ cycle, today: now }: { cycle: Cycle; today: string }) {
             <List size={20} aria-hidden="true" />
           </button>
           {next ? (
-            <a href={`/karta/${next.start}`} class="btn btn-ghost btn-circle min-h-11 min-w-11" aria-label={t('chart.nextCycle')}>
+            <a href={`/chart/${next.start}`} class="btn btn-ghost btn-circle min-h-11 min-w-11" aria-label={t('chart.nextCycle')}>
               <ChevronRight size={20} aria-hidden="true" />
             </a>
           ) : <span class="min-h-11 min-w-11" />}
@@ -216,7 +216,7 @@ function CycleScreen({ cycle, today: now }: { cycle: Cycle; today: string }) {
           <ul class="flex flex-col gap-1">
             {list.map((item) => (
               <li key={item.id}>
-                <a href={`/karta/${item.start}`} class="btn btn-ghost min-h-11 w-full justify-between rounded-box font-normal" onClick={() => setListOpen(false)}>
+                <a href={`/chart/${item.start}`} class="btn btn-ghost min-h-11 w-full justify-between rounded-box font-normal" onClick={() => setListOpen(false)}>
                   <span>{t('chart.cycleNo', { n: item.number })} · {formatDate(item.start, 'short')}</span>
                   <span class="tabular-nums opacity-70">
                     {item.excluded && <span class="badge badge-outline badge-sm mr-2">{t('chart.excludedBadge')}</span>}

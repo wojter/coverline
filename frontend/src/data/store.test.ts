@@ -73,6 +73,10 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
+async function storedToken(): Promise<string | undefined> {
+  return (await import('./state')).meta.value.token;
+}
+
 async function connected(): Promise<void> {
   expect(await store.connect('client-id.access:secret')).toBe('ok');
   await store.syncNow();
@@ -94,6 +98,43 @@ describe('connecting', () => {
     });
     expect(init.redirect).toBe('manual');
     expect(store.device.value).toBe('ios');
+  });
+});
+
+describe('connect gate', () => {
+  it('is ready without a token after init', async () => {
+    expect(store.ready.value).toBe(true);
+    expect(await storedToken()).toBeUndefined();
+  });
+
+  it('stores no token when the server refuses it', async () => {
+    fetchMock.mockImplementationOnce(async () => new Response(null, { status: 401 }));
+    expect(await store.connect('client-id.access:secret')).toBe('rejected');
+    expect(await storedToken()).toBeUndefined();
+    expect(idb.get('meta')).not.toMatchObject({ token: expect.anything() });
+  });
+
+  it('keeps the token when the server cannot be reached', async () => {
+    fetchMock.mockImplementationOnce(async () => {
+      throw new TypeError('network down');
+    });
+    expect(await store.connect('client-id.access:secret')).toBe('offline');
+    expect(await storedToken()).toBe('client-id.access:secret');
+  });
+
+  it('keeps the stored token across a restart', async () => {
+    await connected();
+    vi.resetModules();
+    store = await import('./store');
+    await store.init();
+    expect(store.ready.value).toBe(true);
+    expect(await storedToken()).toBe('client-id.access:secret');
+  });
+
+  it('drops the token on disconnect', async () => {
+    await connected();
+    await store.disconnect();
+    expect(await storedToken()).toBeUndefined();
   });
 });
 

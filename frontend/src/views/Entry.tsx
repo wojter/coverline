@@ -38,10 +38,10 @@ function EntryForm({ date }: { date: string }) {
           <p class="text-xs opacity-70">{subtitle}</p>
         </div>
         <div class="flex gap-1">
-          <a href={`/wpis/${addDays(date, -1)}`} class="btn btn-ghost btn-circle min-h-11 min-w-11" aria-label={t('entry.previous')}>
+          <a href={`/entry/${addDays(date, -1)}`} class="btn btn-ghost btn-circle min-h-11 min-w-11" aria-label={t('entry.previous')}>
             <ChevronLeft size={20} aria-hidden="true" />
           </a>
-          <a href={`/wpis/${addDays(date, 1)}`} class="btn btn-ghost btn-circle min-h-11 min-w-11" aria-label={t('entry.next')}>
+          <a href={`/entry/${addDays(date, 1)}`} class="btn btn-ghost btn-circle min-h-11 min-w-11" aria-label={t('entry.next')}>
             <ChevronRight size={20} aria-hidden="true" />
           </a>
         </div>

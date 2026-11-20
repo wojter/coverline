@@ -130,24 +130,24 @@ Pure functions only. No imports from `data/`, `components/`, `views/`. Boundary 
 
 **U1 shared components** – `components/`: `Chips` (single/multi), `TempInput` (`inputmode="decimal"`, ≥ 16 px, clear button that deletes the reading, D8), `CycleRing`, `SyncBadge`, `TokenBanner`, `MucusInfo` (S4.3), `Day1Prompt` (S2.5 dialogs). Then U2–U7 run in parallel, one agent per view.
 
-**U2 F2 Entry** `/wpis/:date` – all S2.1 fields, chips only, override marker and reset, mark chips, prev/next day. Save sends only touched fields; an explicit clear sends `null` (S4.1). Build this view first: it exercises every field.
+**U2 F2 Entry** `/entry/:date` – all S2.1 fields, chips only, override marker and reset, mark chips, prev/next day. Save sends only touched fields; an explicit clear sends `null` (S4.1). Build this view first: it exercises every field.
 
 **U3 F1 Today** `/` – ring, intention, quick form, partial fill with prefill, save with sync status. Keyboard "next" moves from source 1 to source 2, Save visible without scrolling (20 s target, S4.1).
 
-**U4 F3 Chart** `/karta/:date` – split in three:
+**U4 F3 Chart** `/chart/:date` – split in three:
 - U4a `components/chart/layout.ts` + tests (pure geometry: shared scale 36.00–37.30 auto-extended, 0.05 steps, ≥ 40 columns, line breaks on missing days, skips excluded readings) and `Chart.tsx` (rows 1–11 in card order, colour + marker shape, marks above points, disturbance markers, rotated `chart_note` anchored to the top with ellipsis, behind the curves).
-- U4b `views/Chart.tsx`: summary panel with flags, interpretation editor (coverline typed or tapped, fertile days, count-mark mode), source toggles, tap → `/wpis/:date`, cycle navigation and list, URL normalised to the cycle start.
+- U4b `views/Chart.tsx`: summary panel with flags, interpretation editor (coverline typed or tapped, fertile days, count-mark mode), source toggles, tap → `/entry/:date`, cycle navigation and list, URL normalised to the cycle start.
 - U4c print: `@page { size: A4 landscape }`, one page, legend, mucus definitions, B/W legible, constants from S3.
 
-**U5 F4 Calendar** `/kalendarz` – month grid (Monday first), day indicators, muted out-of-cycle days, "Mark cycle starts" mode using `Day1Prompt`.
+**U5 F4 Calendar** `/calendar` – month grid (Monday first), day indicators, muted out-of-cycle days, "Mark cycle starts" mode using `Day1Prompt`.
 
-**U6 F5 Stats** `/statystyki` – cycle totals, per-cycle table (tap → chart), source evaluation side by side, excluded cycles marked.
+**U6 F5 Stats** `/stats` – cycle totals, per-cycle table (tap → chart), source evaluation side by side, excluded cycles marked.
 
-**U7 F6 Settings** `/ustawienia` – sources (name, site, colour, marker, range), language, cycle settings, CSV download via `csv.ts`, JSON via `fetch` + `Blob` of `/api/export.json` (a plain link cannot carry the token headers), outbox and failed ops (retry/discard), manual sync, device label, storage persistence status, token.
+**U7 F6 Settings** `/settings` – sources (name, site, colour, marker, range), language, cycle settings, CSV download via `csv.ts`, JSON via `fetch` + `Blob` of `/api/export.json` (a plain link cannot carry the token headers), outbox and failed ops (retry/discard), manual sync, device label, storage persistence status, token.
 
 ## Phase 4 – Hardening and acceptance
 
-**V1 e2e** (Playwright, `frontend/e2e/`) – partial save twice loses nothing; offline entry syncs on reconnect; moving a start in both directions keeps the data and an old `/karta/:date` link; switching language changes no stored data.
+**V1 e2e** (Playwright, `frontend/e2e/`) – partial save twice loses nothing; offline entry syncs on reconnect; moving a start in both directions keeps the data and an old `/chart/:date` link; switching language changes no stored data.
 
 **V2 acceptance** – walk through S7 item by item. Manual by the user: CSV in Polish and English Excel, B/W print, both phones.
 

@@ -52,10 +52,10 @@ Backend (`AUTH_MODE=cloudflare`):
 `AUTH_MODE=dev` uses `DEV_IDENTITY`. The app refuses to start in this mode unless `ENV=dev`.
 
 Client:
-- The user pastes the token once in **Settings / Connect** as `<client_id>:<client_secret>`. On iOS this must be done inside the installed app, not in Safari.
+- The user pastes the token once on the connect screen as `<client_id>:<client_secret>`. On iOS this must be done inside the installed app, not in Safari.
 - The token is stored in IndexedDB. It is sent as `CF-Access-Client-Id` and `CF-Access-Client-Secret` on `/api/*` fetches only.
 - The UI shows only the last 4 characters of the token.
-- Without a token, the app works locally and shows "not connected".
+- Without a token, the app shows only the connect screen (D23). Once a token is stored, the app opens straight away, also offline.
 
 ## 4. Data (SQLite)
 
@@ -284,7 +284,7 @@ compose.yaml, Dockerfile
 ```
 
 UI rules not in the spec:
-- Routes: `/`, `/wpis/:date`, `/karta/:date` (normalised to the cycle start), `/kalendarz`, `/statystyki`, `/ustawienia`.
+- Routes: `/`, `/entry/:date`, `/chart/:date` (normalised to the cycle start), `/calendar`, `/stats`, `/settings`.
 - Inputs at 16 px or larger. Temperature fields use `inputmode="decimal"`.
 - Print uses `@page { size: A4 landscape }`, with one SVG chart sized to the page.
 

@@ -26,7 +26,7 @@ export default function Stats() {
         <h2 class="text-xs font-semibold uppercase tracking-wide opacity-70">{t('stats.cycles')}</h2>
         <div class="flex flex-col gap-2 md:hidden">
           {rows.map(({ cycle, summary }) => (
-            <a key={cycle.id} href={`/karta/${cycle.start}`} class={`card flex flex-col gap-1 rounded-box border border-base-300 bg-base-100 p-3 text-sm ${cycle.excluded ? 'opacity-70' : ''}`}>
+            <a key={cycle.id} href={`/chart/${cycle.start}`} class={`card flex flex-col gap-1 rounded-box border border-base-300 bg-base-100 p-3 text-sm ${cycle.excluded ? 'opacity-70' : ''}`}>
               <span class="flex items-center justify-between font-semibold">
                 <span>{t('chart.cycleNo', { n: cycle.number })} · {formatDate(cycle.start, 'short')}</span>
                 <span class="tabular-nums">{summary.length}</span>
@@ -62,7 +62,7 @@ export default function Stats() {
             <tbody>
               {rows.map(({ cycle, summary }) => (
                 <tr key={cycle.id} class={`hover ${cycle.excluded ? 'opacity-70' : ''}`}>
-                  <td><a href={`/karta/${cycle.start}`} class="link">{cycle.number}</a>{cycle.excluded && <span class="badge badge-outline badge-xs ml-1">{t('stats.excluded')}</span>}</td>
+                  <td><a href={`/chart/${cycle.start}`} class="link">{cycle.number}</a>{cycle.excluded && <span class="badge badge-outline badge-xs ml-1">{t('stats.excluded')}</span>}</td>
                   <td class="tabular-nums">{formatDate(cycle.start, 'short')}</td>
                   <td class="tabular-nums">{summary.length}</td>
                   <td class="tabular-nums">{summary.lastMenstruationDay ? formatDate(summary.lastMenstruationDay, 'short') : '–'}</td>

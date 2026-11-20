@@ -3,10 +3,10 @@ import { t } from '../i18n';
 
 const TABS = [
   { href: '/', label: 'nav.today', Icon: House },
-  { href: '/kalendarz', label: 'nav.calendar', Icon: CalendarDays },
-  { href: '/karta', label: 'nav.chart', Icon: ChartLine },
-  { href: '/statystyki', label: 'nav.stats', Icon: ChartNoAxesCombined },
-  { href: '/ustawienia', label: 'nav.settings', Icon: Settings },
+  { href: '/calendar', label: 'nav.calendar', Icon: CalendarDays },
+  { href: '/chart', label: 'nav.chart', Icon: ChartLine },
+  { href: '/stats', label: 'nav.stats', Icon: ChartNoAxesCombined },
+  { href: '/settings', label: 'nav.settings', Icon: Settings },
 ] as const;
 
 function isActive(path: string, href: string): boolean {

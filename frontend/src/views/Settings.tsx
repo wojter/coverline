@@ -5,7 +5,7 @@ import { PillChoice } from '../components/Chips';
 import { FieldGroup } from '../components/FieldGroup';
 import { SOURCE_SWATCHES } from '../components/tokens';
 import { downloadBlob } from '../components/download';
-import { connect, changeLanguage, changeTheme, disconnect, exportJson, retryFailed, discardFailed, save, syncNow } from '../data/store';
+import { changeLanguage, changeTheme, disconnect, exportJson, retryFailed, discardFailed, save, syncNow } from '../data/store';
 import { cycles, data, device, failed, lastSaved, meta, outbox, syncState, theme } from '../data/state';
 import { buildCsv } from '../domain/csv';
 import { defaultRange } from '../domain/tempInput';
@@ -237,40 +237,15 @@ function DataCard() {
 }
 
 function ConnectionCard() {
-  const [token, setToken] = useState('');
-  const [message, setMessage] = useState<string | null>(null);
   const saved = meta.value.token;
-
-  async function onConnect(event: Event) {
-    event.preventDefault();
-    const result = await connect(token);
-    if (result === 'ok') {
-      setToken('');
-      setMessage(null);
-    } else {
-      setMessage(t(`settings.connection.${result === 'invalid' ? 'invalid' : result === 'offline' ? 'offline' : 'rejected'}`));
-    }
-  }
-
+  if (!saved) return null;
   return (
     <Card title={t('settings.connection.title')}>
-      {saved ? (
-        <>
-          <p class="text-sm">{device.value ? t('settings.connection.connectedAs', { device: device.value }) : t('settings.connection.notConnected')}</p>
-          <p class="text-xs opacity-70 tabular-nums">{t('settings.connection.tokenEnding', { last: saved.slice(-4) })}</p>
-          <p class="text-xs opacity-70">{t(`sync.state.${stateKey(syncState.value)}`)}</p>
-          {syncState.value === 'unauthorized' && <p role="alert" class="alert alert-warning text-sm">{t('settings.connection.rejected')}</p>}
-          <button type="button" class="btn btn-soft btn-error min-h-11 rounded-full self-start" onClick={() => void disconnect()}>{t('settings.connection.disconnect')}</button>
-        </>
-      ) : (
-        <form class="flex flex-col gap-3" onSubmit={onConnect}>
-          <p class="text-sm opacity-70">{t('settings.connection.notConnected')}</p>
-          <p class="text-sm opacity-70">{t('settings.connection.hint')}</p>
-          <input type="password" autoComplete="off" class="input w-full text-base" placeholder={t('settings.connection.placeholder')} value={token} onInput={(e) => setToken((e.target as HTMLInputElement).value)} />
-          {message && <p class="text-sm text-error">{message}</p>}
-          <button type="submit" class="btn btn-primary min-h-11 rounded-full self-start">{t('settings.connection.connect')}</button>
-        </form>
-      )}
+      <p class="text-sm">{device.value ? t('settings.connection.connectedAs', { device: device.value }) : t('settings.connection.notConnected')}</p>
+      <p class="text-xs opacity-70 tabular-nums">{t('settings.connection.tokenEnding', { last: saved.slice(-4) })}</p>
+      <p class="text-xs opacity-70">{t(`sync.state.${stateKey(syncState.value)}`)}</p>
+      {syncState.value === 'unauthorized' && <p role="alert" class="alert alert-warning text-sm">{t('settings.connection.rejected')}</p>}
+      <button type="button" class="btn btn-soft btn-error min-h-11 rounded-full self-start" onClick={() => void disconnect()}>{t('settings.connection.disconnect')}</button>
     </Card>
   );
 }

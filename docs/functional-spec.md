@@ -168,7 +168,7 @@ Rules:
   - 4 digits get a decimal point after 2 digits (`3645` becomes `36.45`)
   - a comma or a dot is accepted as the decimal separator
 
-### F2. Day entry / Wpis (`/wpis/:date`)
+### F2. Day entry / Wpis (`/entry/:date`)
 
 - All fields from 2.1, any date, previous and next day navigation.
 - Chip buttons, no dropdowns.
@@ -178,7 +178,7 @@ Rules:
 - Count marks: chips for `mark_mucus` and for `mark_temp[s]` of each source.
 - Cycle day 1 shows the prompts from 2.5.
 
-### F3. Cycle chart / Karta cyklu (`/karta/:date`)
+### F3. Cycle chart / Karta cyklu (`/chart/:date`)
 
 Layout mirrors the paper card. Rows top to bottom:
 
@@ -230,15 +230,15 @@ Interpretation and navigation:
   - sets the coverline per source (typed or tapped on the grid) and the fertile days
   - has a count-mark mode: pick a track (Mucus / Śluz, source 1, source 2) and a mark, then tap day columns to assign or remove it
   - count marks can also be set in F2
-- Tap a day column to open `/wpis/:date`.
+- Tap a day column to open `/entry/:date`.
 - Previous and next cycle navigation, plus a list of all cycles (number, dates, length, excluded marker) to jump to any of them.
-- `/karta/:date` accepts any date inside a cycle and changes the URL to that cycle's start, so old links still work after a start is moved.
+- `/chart/:date` accepts any date inside a cycle and changes the URL to that cycle's start, so old links still work after a start is moved.
 
 Print:
 - A4 landscape, one page per cycle, in the selected language.
 - Readable in black and white. Includes the legend, the mucus definitions and the day comments.
 
-### F4. Calendar / Kalendarz (`/kalendarz`)
+### F4. Calendar / Kalendarz (`/calendar`)
 
 - Month grid, Monday first.
 - Each day shows: bleeding, cycle start, mucus quality (colour), mucus peak, fertile band, a marker per recorded source.
@@ -247,7 +247,7 @@ Print:
 - Cycle start can be set on past dates, to backfill history from the paper cards (start dates alone are enough for shortest/longest).
 - A **Mark cycle starts / Zaznacz początki cykli** mode sets or removes a cycle start with one tap per day, without opening the entry. The prompts from 2.5 still apply.
 
-### F5. Stats / Statystyki (`/statystyki`)
+### F5. Stats / Statystyki (`/stats`)
 
 Cycles:
 - Count, plus average, min and max length (completed, non-excluded cycles; overall and over the last N).
@@ -266,7 +266,7 @@ Source evaluation, per source independently and shown side by side, to help choo
 - cycles with a rise marked (`third_high_day` set) out of completed cycles
 - days from `mucus_peak` to `third_high_day`, per cycle
 
-### F6. Settings / Ustawienia (`/ustawienia`)
+### F6. Settings / Ustawienia (`/settings`)
 
 - **Sources / Pomiary (2):**
   - name: free text, e.g. "Pomiar termometrem X". Defaults are "Pomiar 1" / "Pomiar 2" (EN: "Measurement 1" / "Measurement 2").

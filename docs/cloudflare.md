@@ -52,7 +52,7 @@ ALLOWED_SERVICE_TOKENS=<ios client id>.access=ios,<android client id>.access=and
 
 The label is what the app shows as the device. Tokens that are not listed are rejected by the server even if Access accepts them.
 
-Each device pastes `<client_id>:<client_secret>` once in Settings → Connect. On iOS, do this inside the installed app, not in Safari.
+Each device pastes `<client_id>:<client_secret>` once on the connect screen. On iOS, do this inside the installed app, not in Safari.
 
 ## 4. Start and check
 

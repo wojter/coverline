@@ -5,6 +5,8 @@ import type { FailedOp, Meta, Theme } from './db';
 
 export type SyncState = 'not-connected' | 'idle' | 'syncing' | 'offline' | 'unauthorized' | 'error';
 
+// False until IndexedDB is read, so the UI never guesses whether a token exists.
+export const ready = signal(false);
 export const data = signal<Dataset>(seedDataset());
 export const outbox = signal<Op[]>([]);
 export const failed = signal<FailedOp[]>([]);

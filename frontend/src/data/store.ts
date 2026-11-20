@@ -1,11 +1,11 @@
 import { applyOp } from './apply';
 import { loadStored, saveFailed, saveMeta, saveQueues, type Meta, type Theme } from './db';
 import { cancelRetry, fetchDevice, fetchExport, requestSync, splitToken } from './sync';
-import { data, device, failed, lastSaved, meta, outbox, syncState, theme } from './state';
+import { data, device, failed, lastSaved, meta, outbox, ready, syncState, theme } from './state';
 import { detectLanguage, setLanguage, type Lang } from '../i18n';
 import type { Op } from '../domain/types';
 
-export { cycles, data, device, failed, lastSaved, outbox, syncState, theme } from './state';
+export { cycles, data, device, failed, lastSaved, outbox, ready, syncState, theme } from './state';
 
 export interface RejectedOp {
   op: Op;
@@ -22,6 +22,7 @@ export async function init(): Promise<void> {
   meta.value = stored.meta;
   theme.value = stored.meta.theme ?? 'system';
   setLanguage(stored.meta.language ?? detectLanguage(browserLanguage()));
+  ready.value = true;
   await requestPersistence();
   listen();
   if (meta.value.token) {
@@ -86,22 +87,27 @@ export async function save(ops: Op[]): Promise<RejectedOp[]> {
   return rejected;
 }
 
-// 'offline' keeps the token and retries on the next sync. 'rejected' drops it.
+// The token is stored only once the server accepted it, or could not be asked ('offline'
+// keeps it and retries on the next sync). A refused token is never stored.
 export async function connect(token: string): Promise<'ok' | 'invalid' | 'rejected' | 'offline'> {
   if (!splitToken(token)) return 'invalid';
-  await updateMeta({ token, etag: undefined });
-  let label: string | null;
+  let label: string | null = null;
+  let offline = false;
   try {
     label = await fetchDevice(token);
   } catch {
+    offline = true;
+  }
+  if (!offline && label === null) return 'rejected';
+  cancelRetry();
+  await updateMeta({ token, etag: undefined });
+  syncState.value = 'idle';
+  if (offline) {
+    void refreshDevice();
+    void requestSync();
     return 'offline';
   }
-  if (label === null) {
-    await disconnect();
-    return 'rejected';
-  }
   device.value = label;
-  syncState.value = 'idle';
   void requestSync(true);
   return 'ok';
 }

@@ -4,6 +4,10 @@
     "notFound": "Nie znaleziono strony",
     "placeholder": "Wkrótce, w następnym kroku."
   },
+  "connect": {
+    "title": "Połącz to urządzenie",
+    "intro": "Podaj token tego urządzenia, aby zacząć. Zostanie zapisany na urządzeniu, więc zrobisz to tylko raz."
+  },
   "nav": {
     "today": "Dziś",
     "entry": "Wpis",

@@ -4,6 +4,10 @@
     "notFound": "Page not found",
     "placeholder": "Coming in the next step."
   },
+  "connect": {
+    "title": "Connect this device",
+    "intro": "Enter the token for this device to start. It is saved on this device, so you only do this once."
+  },
   "nav": {
     "today": "Today",
     "entry": "Entry",

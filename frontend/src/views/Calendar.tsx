@@ -113,7 +113,7 @@ function DayCell({ date, inMonth, now, marking, onTap }: { date: string; inMonth
     );
   }
   return (
-    <a href={`/wpis/${date}`} class={classes} aria-label={formatDate(date, 'long')}>
+    <a href={`/entry/${date}`} class={classes} aria-label={formatDate(date, 'long')}>
       {cell}
     </a>
   );

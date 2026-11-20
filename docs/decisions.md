@@ -180,3 +180,13 @@ Where the spec leaves room, it is read as follows:
   - The schema stays v1 with the new `CHECK`. The existing databases (production and dev) were rebuilt once by hand: `light`, `medium` and `heavy` became `bleeding` and `data_version` changed. The app carries no migration for the old values, so a database from before this change (or an old backup) must be converted the same way before use.
 - **Why:** the owner records only these three on the card. The levels were never used by any rule except "light or heavier", which now reads `bleeding`.
 - **Spec:** 2.3 and 2.4 were edited by the owner's request, as this contradicts the earlier value table.
+
+## D23. Connect screen gates the app until a token is stored
+
+- **Status:** proposed
+- **Decision:**
+  - While the device has no token, the app renders only a connect screen (no navigation, no views). `ready` (set once IndexedDB is read) keeps the UI blank until then, so a connected device never flashes the screen.
+  - The gate depends on the stored token only, not on the server. A device with a token opens the app offline. A token the server later refuses keeps the app open with the token banner (the outbox stays safe) and Settings / Disconnect leads back to the connect screen.
+  - `connect()` stores the token only after `/api/me` accepts it, or when the server cannot be reached (offline). A refused token is never stored, so the screen stays mounted with the error.
+  - Disconnect keeps the local data and outbox in IndexedDB. Connecting again syncs them.
+- **Why:** an unconnected install showed the full empty app, which looked usable while nothing could sync. Replaces "Without a token, the app works locally" in architecture 3.

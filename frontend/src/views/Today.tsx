@@ -42,12 +42,12 @@ export default function Today() {
         <CycleRing compact cycleDay={dayCount} average={ringAverage(cycles.value)} intention={current?.row.intention ?? null} segments={segments} fertile={fertile} />
       </section>
       <div class="grid grid-cols-2 gap-3">
-        <a href="/karta" class="card flex min-h-11 flex-col gap-1 rounded-box border border-base-300 bg-base-100 p-2">
+        <a href="/chart" class="card flex min-h-11 flex-col gap-1 rounded-box border border-base-300 bg-base-100 p-2">
           <span class="text-xs uppercase tracking-wide opacity-70">{t('today.cycleNo')}</span>
           <span class="text-xl font-semibold tabular-nums">{current ? current.number : '–'}</span>
           {current?.row.intention && <span class="text-sm">{t(`codes.intention.${current.row.intention}`)}</span>}
         </a>
-        <a href={`/wpis/${date}`} class="card flex min-h-11 flex-col gap-1 rounded-box border border-base-300 bg-base-100 p-2">
+        <a href={`/entry/${date}`} class="card flex min-h-11 flex-col gap-1 rounded-box border border-base-300 bg-base-100 p-2">
           <span class="text-xs uppercase tracking-wide opacity-70">{t('today.today')}</span>
           {SOURCE_IDS.map((source) => (
             <TodayTemp key={source} date={date} source={source} />
@@ -61,7 +61,7 @@ export default function Today() {
         <h2 class="sr-only">{t('today.quickForm')}</h2>
         <DayForm draft={draft} variant="quick" day1={{ checked: isCycleStart(date), onToggle: toggleDay1 }} />
       </section>
-      <a href={`/wpis/${date}`} class="btn btn-outline min-h-11 rounded-full self-start">
+      <a href={`/entry/${date}`} class="btn btn-outline min-h-11 rounded-full self-start">
         {t('today.fullForm')}
       </a>
       <SaveBar onSave={() => void draft.save()} status={draft.status} disabled={!draft.dirty} />

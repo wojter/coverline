@@ -67,7 +67,7 @@ def test_shell_is_served_at_root_with_no_cache(shell_client):
 
 
 def test_unknown_route_falls_back_to_shell(shell_client):
-    response = shell_client.get("/wpis/2026-11-18")
+    response = shell_client.get("/entry/2026-11-18")
 
     assert response.status_code == 200
     assert response.text == "<html>shell</html>"
