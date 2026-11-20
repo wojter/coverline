@@ -1,6 +1,6 @@
 // Wire types mirror architecture 5.1 and spec 2.4.
 
-export const BLEEDING = ['staining', 'spotting', 'light', 'medium', 'heavy'] as const;
+export const BLEEDING = ['bleeding', 'staining', 'spotting'] as const;
 export const SENSATION = ['dry', 'moist', 'wet'] as const;
 export const MUCUS_FEATURE = ['cloudy', 'sticky', 'clear', 'stretchy'] as const;
 export const MUCUS_QUALITY = ['none', 'less_fertile', 'highly_fertile'] as const;

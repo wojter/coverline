@@ -14,7 +14,7 @@
       "name": "partial set keeps the fields it does not list",
       "before": {
         "days": {
-          "2026-11-18": {"bleeding": "light", "mucus_sensation": "moist", "mucus_features": null, "mucus_atypical": null, "mucus_quality_override": null, "symptoms": null, "intercourse": null, "disturbances": null, "chart_note": null, "mark_mucus": null, "notes": null}
+          "2026-11-18": {"bleeding": "bleeding", "mucus_sensation": "moist", "mucus_features": null, "mucus_atypical": null, "mucus_quality_override": null, "symptoms": null, "intercourse": null, "disturbances": null, "chart_note": null, "mark_mucus": null, "notes": null}
         }
       },
       "ops": [
@@ -22,7 +22,7 @@
       ],
       "after": {
         "days": {
-          "2026-11-18": {"bleeding": "light", "mucus_sensation": "moist", "mucus_features": ["sticky"], "mucus_atypical": null, "mucus_quality_override": null, "symptoms": null, "intercourse": null, "disturbances": null, "chart_note": null, "mark_mucus": null, "notes": null}
+          "2026-11-18": {"bleeding": "bleeding", "mucus_sensation": "moist", "mucus_features": ["sticky"], "mucus_atypical": null, "mucus_quality_override": null, "symptoms": null, "intercourse": null, "disturbances": null, "chart_note": null, "mark_mucus": null, "notes": null}
         }
       },
       "rejected": []
@@ -83,7 +83,7 @@
           "0b7c2f4e-6a1d-4c3e-9f2a-1d2e3f4a5b6c": {"start_date": "2026-11-01", "end_date": null, "excluded_from_stats": false, "intention": null, "first_mucus_day": null, "first_hf_mucus_day": null, "coverline_1": null, "coverline_2": null, "fertile_start": null, "fertile_end": null, "prev_cycle_rise": null, "notes": null}
         },
         "days": {
-          "2026-11-18": {"bleeding": "light", "mucus_sensation": null, "mucus_features": null, "mucus_atypical": null, "mucus_quality_override": null, "symptoms": null, "intercourse": null, "disturbances": null, "chart_note": null, "mark_mucus": null, "notes": null}
+          "2026-11-18": {"bleeding": "bleeding", "mucus_sensation": null, "mucus_features": null, "mucus_atypical": null, "mucus_quality_override": null, "symptoms": null, "intercourse": null, "disturbances": null, "chart_note": null, "mark_mucus": null, "notes": null}
         },
         "temps": {
           "2026-11-18/1": {"value": 3645, "excluded": false, "mark": "2"},
@@ -106,7 +106,7 @@
       "name": "delete of a missing row is a no-op, not rejected",
       "before": {
         "days": {
-          "2026-11-18": {"bleeding": "light", "mucus_sensation": null, "mucus_features": null, "mucus_atypical": null, "mucus_quality_override": null, "symptoms": null, "intercourse": null, "disturbances": null, "chart_note": null, "mark_mucus": null, "notes": null}
+          "2026-11-18": {"bleeding": "bleeding", "mucus_sensation": null, "mucus_features": null, "mucus_atypical": null, "mucus_quality_override": null, "symptoms": null, "intercourse": null, "disturbances": null, "chart_note": null, "mark_mucus": null, "notes": null}
         }
       },
       "ops": [
@@ -256,7 +256,7 @@
         {"entity": "cycle", "key": "5f0e9a7c-2b4d-4e8f-a1c3-7d6e5f4a3b2c", "set": {"start_date": "2026-10-01"}},
         {"entity": "cycle", "key": "5f0e9a7c-2b4d-4e8f-a1c3-7d6e5f4a3b2c", "set": {"start_date": "2026-10-29"}},
         {"entity": "cycle", "key": "0b7c2f4e-6a1d-4c3e-9f2a-1d2e3f4a5b6c", "set": {"start_date": "2026-10-29"}},
-        {"entity": "day", "key": "2026-10-29", "set": {"bleeding": "medium"}}
+        {"entity": "day", "key": "2026-10-29", "set": {"bleeding": "bleeding"}}
       ],
       "after": {
         "cycles": {
@@ -264,7 +264,7 @@
           "5f0e9a7c-2b4d-4e8f-a1c3-7d6e5f4a3b2c": {"start_date": "2026-10-29", "end_date": null, "excluded_from_stats": false, "intention": null, "first_mucus_day": null, "first_hf_mucus_day": null, "coverline_1": null, "coverline_2": null, "fertile_start": null, "fertile_end": null, "prev_cycle_rise": null, "notes": null}
         },
         "days": {
-          "2026-10-29": {"bleeding": "medium", "mucus_sensation": null, "mucus_features": null, "mucus_atypical": null, "mucus_quality_override": null, "symptoms": null, "intercourse": null, "disturbances": null, "chart_note": null, "mark_mucus": null, "notes": null}
+          "2026-10-29": {"bleeding": "bleeding", "mucus_sensation": null, "mucus_features": null, "mucus_atypical": null, "mucus_quality_override": null, "symptoms": null, "intercourse": null, "disturbances": null, "chart_note": null, "mark_mucus": null, "notes": null}
         }
       },
       "rejected": [0, 2]

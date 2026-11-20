@@ -72,7 +72,7 @@ def build_ops(rng):
 def day_entries(rng, d, ovulation, day_date, index):
     fields = {}
     if d <= 5:
-        fields["bleeding"] = ["heavy", "heavy", "medium", "light", "spotting"][d - 1]
+        fields["bleeding"] = ["bleeding", "bleeding", "bleeding", "staining", "spotting"][d - 1]
     if 9 <= d < ovulation - 1:
         fields["mucus_sensation"] = "moist" if d % 2 else "dry"
         fields["mucus_features"] = ["cloudy"] if d % 3 == 0 else None

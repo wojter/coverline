@@ -8,7 +8,7 @@ const A = 'a0000000-0000-4000-8000-000000000001';
 const data = makeData({
   cycles: { [A]: cycle('2026-06-01') },
   days: {
-    '2026-06-01': day({ bleeding: 'heavy', mucus_features: ['cloudy', 'clear'], notes: 'morning' }),
+    '2026-06-01': day({ bleeding: 'bleeding', mucus_features: ['cloudy', 'clear'], notes: 'morning' }),
   },
   temps: {
     '2026-06-02/1': reading(3645, { mark: '1' }),
@@ -26,7 +26,7 @@ const labels: Record<string, string> = {
   'csv.bleeding': 'Krwawienie',
   'codes.mucus_feature.cloudy': 'Mętny',
   'codes.mucus_feature.clear': 'Przejrzysty',
-  'codes.bleeding.heavy': 'Obfite',
+  'codes.bleeding.bleeding': 'Krwawienie',
 };
 const label = (key: string) => labels[key] ?? key;
 const sourceName = (s: '1' | '2') => (s === '1' ? 'Usta X' : 'Pomiar 2');
@@ -77,7 +77,7 @@ describe('buildCsv', () => {
     const csv = buildCsv(data, buildCycles(data), 'en', label, sourceName);
     const header = csv.slice(1).split('\r\n')[0].split(',');
     const [first, second] = rows(csv, ',');
-    expect(first[header.indexOf('Krwawienie')]).toBe('Obfite');
+    expect(first[header.indexOf('Krwawienie')]).toBe('Krwawienie');
     expect(second[header.indexOf('Pominięty Pomiar 2')]).toBe('1');
   });
 

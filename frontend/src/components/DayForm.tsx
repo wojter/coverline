@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'preact/hooks';
 import { Info } from 'lucide-preact';
-import { PillChoice, TileChoice } from './Chips';
+import { PillChoice, SingleTileChoice, TileChoice } from './Chips';
 import { FieldGroup } from './FieldGroup';
 import { More } from './More';
 import { MucusInfo } from './MucusInfo';
@@ -67,13 +67,15 @@ export function DayForm({ draft, variant, day1 }: { draft: DayDraft; variant: 'f
           </FieldGroup>
         )}
         <FieldGroup title={t('components.dayForm.mucus')}>
-          <PillChoice
+          <p class="text-sm font-semibold">{t('field.sensation')}</p>
+          <SingleTileChoice
             options={SENSATION}
             value={day.mucus_sensation}
             label={(code) => t(`codes.sensation.${code}`)}
             onChange={(value) => draft.setField('mucus_sensation', value)}
             ariaLabel={t('field.sensation')}
           />
+          <p class="text-sm font-semibold">{t('field.mucusFeatures')}</p>
           <TileChoice
             options={MUCUS_FEATURE}
             value={day.mucus_features}
@@ -94,7 +96,7 @@ export function DayForm({ draft, variant, day1 }: { draft: DayDraft; variant: 'f
                   <Info size={18} aria-hidden="true" />
                 </button>
               </div>
-              <PillChoice
+              <SingleTileChoice
                 options={MUCUS_QUALITY}
                 value={day.mucus_quality_override}
                 label={(code) => t(`codes.mucus_quality.${code}`)}

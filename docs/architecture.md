@@ -158,7 +158,7 @@ Rules:
 An op is one change to one row, identified by `entity` and `key`. It either sets some fields (`set`) or deletes the row (`delete: true`):
 
 ```json
-{ "entity": "day",   "key": "2026-11-18",   "set": { "bleeding": "light", "chart_note": null } }
+{ "entity": "day",   "key": "2026-11-18",   "set": { "bleeding": "spotting", "chart_note": null } }
 { "entity": "temp",  "key": "2026-11-18/1", "delete": true }
 { "entity": "cycle", "key": "0b7c2f4e-…",   "set": { "start_date": "2026-11-19" } }
 ```

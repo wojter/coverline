@@ -19,7 +19,7 @@ import { daysBetween, isDate, today } from '../domain/dates';
 import { cycleSummary, type CycleSummary } from '../domain/stats';
 import { suggestFirstHfMucusDay, suggestFirstMucusDay } from '../domain/derive';
 import { parseTempInput } from '../domain/tempInput';
-import { INTENTION, MUCUS_MARK, SOURCE_IDS, TEMP_MARK, type Intention, type SourceId } from '../domain/types';
+import { BLEEDING, INTENTION, MUCUS_MARK, SOURCE_IDS, TEMP_MARK, type Intention, type SourceId } from '../domain/types';
 import { formatDate, formatNumber, formatTemp, t } from '../i18n';
 import { MucusInfo } from '../components/MucusInfo';
 import { Day1Prompt } from '../components/Day1Prompt';
@@ -400,7 +400,7 @@ function PrintSheet({ cycle, summary, now, visible }: { cycle: Cycle; summary: C
             </p>
           ))}
           <p>{t('chart.legendFertile')}</p>
-          <p>{t('chart.legendBleeding')}</p>
+          <p>{t('chart.bleeding')}: {BLEEDING.map((code) => `${t(`codes.bleedingSymbol.${code}`)} = ${t(`codes.bleeding.${code}`)}`).join(', ')}</p>
         </div>
         <div>
           <p class="font-semibold">{t('chart.definitions')}</p>

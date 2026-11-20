@@ -9,7 +9,7 @@ FIXTURES = json.loads((Path(__file__).parents[2] / "fixtures" / "ops.cases.json"
 SEED = FIXTURES["seed"]
 CASES = FIXTURES["cases"]
 DAY = {
-    "bleeding": "light",
+    "bleeding": "bleeding",
     "mucus_sensation": None,
     "mucus_features": None,
     "mucus_atypical": None,
@@ -87,7 +87,7 @@ def test_rejection_message_names_field_not_value(dev_client):
 
 
 def test_history_has_one_row_per_update_or_delete(dev_client):
-    post_ops(dev_client, [{"entity": "day", "key": "2026-11-18", "set": {"bleeding": "light"}}])
+    post_ops(dev_client, [{"entity": "day", "key": "2026-11-18", "set": {"bleeding": "bleeding"}}])
     post_ops(dev_client, [{"entity": "day", "key": "2026-11-18", "set": {"notes": "a"}}])
     post_ops(dev_client, [{"entity": "day", "key": "2026-11-18", "delete": True}])
     post_ops(dev_client, [{"entity": "day", "key": "2026-11-18", "delete": True}])

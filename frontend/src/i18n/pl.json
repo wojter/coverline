@@ -92,11 +92,14 @@
   },
   "codes": {
     "bleeding": {
+      "bleeding": "Krwawienie",
       "staining": "Brudzenie",
-      "spotting": "Plamienie",
-      "light": "Słabe",
-      "medium": "Średnie",
-      "heavy": "Obfite"
+      "spotting": "Plamienie"
+    },
+    "bleedingSymbol": {
+      "bleeding": "K",
+      "staining": "B",
+      "spotting": "P"
     },
     "sensation": {
       "dry": "Sucho",
@@ -213,7 +216,6 @@
     "print": "Drukuj",
     "legend": "Legenda",
     "legendFertile": "Dni płodne: pasek ze skosami",
-    "legendBleeding": "Krwawienie: wypełniony kwadrat w kolorze krwawienia",
     "definitions": "Definicje śluzu",
     "lastUpdated": "Zaktualizowano {date}",
     "noCycles": "Brak cykli. Dodaj początek cyklu w kalendarzu."

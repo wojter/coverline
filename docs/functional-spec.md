@@ -84,7 +84,7 @@ Rules:
 |---|---|---|
 | Cycle number | Cycle no. / Cykl nr | Sequential, plus a starting offset from settings. |
 | Cycle length | Cycle length / Długość cyklu | From the start to the end of the cycle, inclusive (see 2.5). An open cycle shows the current cycle day instead. |
-| Last day of menstruation | Last day of period / Ostatni dzień miesiączki | Last day of the run of `light` or heavier bleeding that starts on day 1. A day with no bleeding recorded ends the run. To correct it, edit the bleeding entries of those days. |
+| Last day of menstruation | Last day of period / Ostatni dzień miesiączki | Last day of the run of `bleeding` days that starts on day 1. A day with staining, spotting or nothing recorded ends the run. To correct it, edit the bleeding entries of those days. |
 | Shortest / longest of last N | Shortest / longest of last N / Najkrótszy / najdłuższy z ostatnich N cykli | The N most recent completed, non-excluded cycles that ended before the viewed cycle starts. N from settings (default 12). Shown with the number of cycles used (e.g. "from 8 cycles"). |
 | Shortest − 21 / − 20 | Shortest cycle minus 21/20 / Najkrótszy cykl minus 21/20 | Informational. Both values shown. Based on the same cycles as shortest / longest. |
 | `mucus_peak` | Mucus peak day / Dzień szczytu objawu śluzu | The day with `mark_mucus = P`. |
@@ -98,11 +98,9 @@ Rules:
 
 | Enum | Code | EN | PL |
 |---|---|---|---|
-| `bleeding` | `staining` | Brown staining | Brudzenie |
+| `bleeding` | `bleeding` | Bleeding | Krwawienie |
+| | `staining` | Brown staining | Brudzenie |
 | | `spotting` | Spotting | Plamienie |
-| | `light` | Light | Słabe |
-| | `medium` | Medium | Średnie |
-| | `heavy` | Heavy | Obfite |
 | `sensation` | `dry` | Dry | Sucho |
 | | `moist` | Moist | Wilgotno |
 | | `wet` | Wet / slippery / oily | Mokro / ślisko / naoliwione |

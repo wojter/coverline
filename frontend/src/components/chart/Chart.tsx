@@ -1,7 +1,6 @@
 import { CHART, chartDays, chartHeight, columnCenter, curveSegments, mucusRowMatch, noteCharLimit, rowLayout, tempTicks, tempY, temperatureScale, truncateNote, valueAtY, type Reading, type RowKey, type TempScale } from './layout';
 import { isFertileDay, type Cycle } from '../../domain/cycles';
-import { BLEED_FILL } from '../tokens';
-import { SOURCE_IDS, type Bleeding, type DayRow, type Marker, type SourceId, type SourceRow, type TempRow } from '../../domain/types';
+import { SOURCE_IDS, type DayRow, type Marker, type SourceId, type SourceRow, type TempRow } from '../../domain/types';
 import { formatTemp, t } from '../../i18n';
 
 export interface GridTap {
@@ -253,7 +252,11 @@ function RowSymbols({ date, index, model, data, cycle }: { date: string; index: 
       <text x={cx} y={y('date')} text-anchor="middle" dominant-baseline="middle" font-size="9" class="fill-base-content tabular-nums">
         {date.slice(8)}
       </text>
-      {day?.bleeding && <rect x={cx - 5} y={y('bleeding') - 5} width="10" height="10" rx="2" class={BLEED_FILL[day.bleeding as Bleeding]} />}
+      {day?.bleeding && (
+        <text x={cx} y={y('bleeding')} text-anchor="middle" dominant-baseline="middle" font-size="10" font-weight="700" class="fill-base-content">
+          {t(`codes.bleedingSymbol.${day.bleeding}`)}
+        </text>
+      )}
       {day?.mark_mucus && (
         <text x={cx} y={y('peak')} text-anchor="middle" dominant-baseline="middle" font-size="10" font-weight="700" class="fill-base-content">
           {day.mark_mucus}

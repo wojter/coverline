@@ -66,11 +66,10 @@
 }
 
 @theme {
+  --color-bleed-bleeding: #d1456a;
   --color-bleed-staining: #a47551;
   --color-bleed-spotting: #f2a7b5;
-  --color-bleed-light: #e57a91;
-  --color-bleed-medium: #d1456a;
-  --color-bleed-heavy: #a3123d;
+  --color-cycle-start: #a3123d;
   --color-mucus-lf: #cdeee4;
   --color-mucus-hf: #2e9c84;
   --color-fertile: #e6defa;

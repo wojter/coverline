@@ -169,3 +169,14 @@ Where the spec leaves room, it is read as follows:
 - **Status:** proposed
 - **Decision:** the app is built before spikes S1–S3 (plan 1.4) are run on the phones. The chart sizing constants are provisional until S3 is printed.
 - **Why:** the owner asked to see the whole app first. S1 and S2 need the deployed tunnel and both phones; their results may still change D4 or D1.
+
+## D22. Bleeding is one code plus staining and spotting
+
+- **Status:** proposed
+- **Decision:**
+  - `bleeding` takes `bleeding`, `staining` or `spotting`, as on the paper card (Krwawienie / brudzenie / plamienie). `light`, `medium` and `heavy` are removed.
+  - The chart shows a letter in the bleeding row instead of a coloured square: PL `K` / `B` / `P`, EN `B` / `St` / `Sp` (`codes.bleedingSymbol`). The letters survive a black-and-white print.
+  - Last day of menstruation (spec 2.3) is the run of `bleeding` days from day 1. Staining and spotting end it.
+  - The schema stays v1 with the new `CHECK`. The existing databases (production and dev) were rebuilt once by hand: `light`, `medium` and `heavy` became `bleeding` and `data_version` changed. The app carries no migration for the old values, so a database from before this change (or an old backup) must be converted the same way before use.
+- **Why:** the owner records only these three on the card. The levels were never used by any rule except "light or heavier", which now reads `bleeding`.
+- **Spec:** 2.3 and 2.4 were edited by the owner's request, as this contradicts the earlier value table.

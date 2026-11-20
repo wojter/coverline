@@ -44,8 +44,7 @@ SCHEMA_V1 = (
     """
     CREATE TABLE days (
       date                   TEXT PRIMARY KEY CHECK (date(date) IS date),
-      bleeding               TEXT
-        CHECK (bleeding IN ('staining', 'spotting', 'light', 'medium', 'heavy')),
+      bleeding               TEXT CHECK (bleeding IN ('bleeding', 'staining', 'spotting')),
       mucus_sensation        TEXT CHECK (mucus_sensation IN ('dry', 'moist', 'wet')),
       mucus_features         TEXT CHECK (json_valid(mucus_features)),
       mucus_atypical         INTEGER CHECK (mucus_atypical IN (0, 1)),

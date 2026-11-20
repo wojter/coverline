@@ -93,7 +93,7 @@ function DayCell({ date, inMonth, now, marking, onTap }: { date: string; inMonth
         {hit && <span class="text-[10px] tabular-nums opacity-80">{hit.day}</span>}
       </span>
       <span class="flex flex-wrap gap-0.5">
-        {start && <span class="badge badge-xs bg-bleed-heavy border-0 text-white">1</span>}
+        {start && <span class="badge badge-xs bg-cycle-start border-0 text-white">1</span>}
         {peak && <span class="badge badge-xs bg-base-content border-0 text-base-100">P</span>}
         {readings.map((s) => (
           <SourceMarker key={s} marker={data.value.sources[s].marker} color={data.value.sources[s].color} size={9} hollow={data.value.temps[tempKey(date, s)]?.excluded} />
@@ -123,7 +123,7 @@ function Legend() {
   return (
     <section class="card flex flex-col gap-2 rounded-box border border-base-300 bg-base-100 p-4 text-sm">
       <h2 class="text-xs font-semibold uppercase tracking-wide opacity-70">{t('calendar.legend')}</h2>
-      <p class="flex items-center gap-2"><span class="badge badge-xs bg-bleed-heavy border-0" />{t('calendar.legendStart')}</p>
+      <p class="flex items-center gap-2"><span class="badge badge-xs bg-cycle-start border-0" />{t('calendar.legendStart')}</p>
       <p class="flex items-center gap-2"><span class="badge badge-xs bg-base-content border-0" />{t('calendar.legendPeak')}</p>
       <p class="flex items-center gap-2"><span class="h-3 w-6 rounded bg-mucus-hf" />{t('calendar.legendHighlyFertile')}</p>
       <p class="flex items-center gap-2"><span class="h-3 w-6 rounded bg-mucus-lf" />{t('calendar.legendLessFertile')}</p>

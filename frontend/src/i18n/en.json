@@ -92,11 +92,14 @@
   },
   "codes": {
     "bleeding": {
+      "bleeding": "Bleeding",
       "staining": "Brown staining",
-      "spotting": "Spotting",
-      "light": "Light",
-      "medium": "Medium",
-      "heavy": "Heavy"
+      "spotting": "Spotting"
+    },
+    "bleedingSymbol": {
+      "bleeding": "B",
+      "staining": "St",
+      "spotting": "Sp"
     },
     "sensation": {
       "dry": "Dry",
@@ -213,7 +216,6 @@
     "print": "Print",
     "legend": "Legend",
     "legendFertile": "Fertile days: hatched band",
-    "legendBleeding": "Bleeding: filled square in the bleeding colour",
     "definitions": "Mucus definitions",
     "lastUpdated": "Updated {date}",
     "noCycles": "No cycles yet. Add a cycle start in the calendar."

@@ -36,24 +36,24 @@ describe('derivedMucusQuality (S4.2)', () => {
 });
 
 describe('lastMenstruationDay (S2.3)', () => {
-  it('ends the run at the first day without light or heavier bleeding', () => {
+  it('ends the run at the first day that is not bleeding', () => {
     const data = makeData({
       cycles: { [A]: cycle('2026-06-03') },
       days: {
-        '2026-06-03': day({ bleeding: 'heavy' }),
-        '2026-06-04': day({ bleeding: 'medium' }),
-        '2026-06-05': day({ bleeding: 'light' }),
-        '2026-06-06': day({ bleeding: 'spotting' }),
-        '2026-06-07': day({ bleeding: 'heavy' }),
+        '2026-06-03': day({ bleeding: 'bleeding' }),
+        '2026-06-04': day({ bleeding: 'bleeding' }),
+        '2026-06-05': day({ bleeding: 'bleeding' }),
+        '2026-06-06': day({ bleeding: 'staining' }),
+        '2026-06-07': day({ bleeding: 'bleeding' }),
       },
     });
     expect(lastMenstruationDay(data, buildCycles(data)[0])).toBe('2026-06-05');
   });
 
-  it('is null when day 1 is only spotting', () => {
+  it('is null when day 1 is only spotting or staining', () => {
     const data = makeData({
       cycles: { [A]: cycle('2026-07-05') },
-      days: { '2026-07-05': day({ bleeding: 'spotting' }), '2026-07-06': day({ bleeding: 'heavy' }) },
+      days: { '2026-07-05': day({ bleeding: 'spotting' }), '2026-07-06': day({ bleeding: 'bleeding' }) },
     });
     expect(lastMenstruationDay(data, buildCycles(data)[0])).toBeNull();
   });

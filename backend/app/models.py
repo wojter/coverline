@@ -13,7 +13,7 @@ from pydantic import (
     model_validator,
 )
 
-Bleeding = Literal["staining", "spotting", "light", "medium", "heavy"]
+Bleeding = Literal["bleeding", "staining", "spotting"]
 MucusSensation = Literal["dry", "moist", "wet"]
 MucusFeature = Literal["cloudy", "sticky", "clear", "stretchy"]
 MucusQuality = Literal["none", "less_fertile", "highly_fertile"]
