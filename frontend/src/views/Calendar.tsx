@@ -38,31 +38,35 @@ export default function Calendar() {
     <div class="flex flex-col gap-4">
       <Heading title={t('nav.calendar')} />
       {marking && <p role="status" class="alert alert-primary rounded-box text-sm">{t('calendar.markingBanner')}</p>}
-      <section class="card flex flex-col gap-3 rounded-box border border-base-300 bg-base-100 p-3">
-        <header class="flex items-center justify-between">
-          <button type="button" class="btn btn-ghost btn-circle min-h-11 min-w-11" aria-label={t('calendar.previousMonth')} onClick={() => shift(-1)}>
-            <ChevronLeft size={20} aria-hidden="true" />
+      <div class="flex flex-col gap-4 lg:grid lg:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)] lg:items-start">
+        <section class="card flex flex-col gap-3 rounded-box border border-base-300 bg-base-100 p-3">
+          <header class="flex items-center justify-between">
+            <button type="button" class="btn btn-ghost btn-circle min-h-11 min-w-11" aria-label={t('calendar.previousMonth')} onClick={() => shift(-1)}>
+              <ChevronLeft size={20} aria-hidden="true" />
+            </button>
+            <h2 class="font-semibold capitalize">{monthTitle}</h2>
+            <button type="button" class="btn btn-ghost btn-circle min-h-11 min-w-11" aria-label={t('calendar.nextMonth')} onClick={() => shift(1)}>
+              <ChevronRight size={20} aria-hidden="true" />
+            </button>
+          </header>
+          <div class="grid grid-cols-7 gap-1 text-center text-xs opacity-70">
+            {weekdayHeaders().map((label) => (
+              <span key={label}>{label}</span>
+            ))}
+          </div>
+          <div class="grid grid-cols-7 gap-1 sm:gap-1.5">
+            {weeks.flat().map((date) => (
+              <DayCell key={date} date={date} inMonth={date.slice(5, 7) === String(month).padStart(2, '0')} now={now} marking={marking} onTap={() => onCellTap(date)} />
+            ))}
+          </div>
+        </section>
+        <div class="flex flex-col gap-4">
+          <button type="button" aria-pressed={marking} class={`btn min-h-11 rounded-full self-start lg:self-stretch ${marking ? 'btn-primary' : 'btn-outline'}`} onClick={() => setMarking(!marking)}>
+            {t('calendar.markStarts')}
           </button>
-          <h2 class="font-semibold capitalize">{monthTitle}</h2>
-          <button type="button" class="btn btn-ghost btn-circle min-h-11 min-w-11" aria-label={t('calendar.nextMonth')} onClick={() => shift(1)}>
-            <ChevronRight size={20} aria-hidden="true" />
-          </button>
-        </header>
-        <div class="grid grid-cols-7 gap-1 text-center text-xs opacity-70">
-          {weekdayHeaders().map((label) => (
-            <span key={label}>{label}</span>
-          ))}
+          <Legend />
         </div>
-        <div class="grid grid-cols-7 gap-1">
-          {weeks.flat().map((date) => (
-            <DayCell key={date} date={date} inMonth={date.slice(5, 7) === String(month).padStart(2, '0')} now={now} marking={marking} onTap={() => onCellTap(date)} />
-          ))}
-        </div>
-      </section>
-      <button type="button" aria-pressed={marking} class={`btn min-h-11 rounded-full self-start ${marking ? 'btn-primary' : 'btn-outline'}`} onClick={() => setMarking(!marking)}>
-        {t('calendar.markStarts')}
-      </button>
-      <Legend />
+      </div>
       {request && <Day1Prompt request={request} onDone={() => setRequest(null)} />}
     </div>
   );
@@ -80,7 +84,8 @@ function DayCell({ date, inMonth, now, marking, onTap }: { date: string; inMonth
   const hit = cycleAt(cycles.value, date);
   const bleeding = day?.bleeding ?? null;
   const quality = mucusQuality(day);
-  const fill = bleeding ? BLEED_BG[bleeding] : quality === 'highly_fertile' ? 'bg-mucus-hf' : quality === 'less_fertile' ? 'bg-mucus-lf' : 'bg-base-100';
+  const domain = bleeding ? BLEED_BG[bleeding] : quality === 'highly_fertile' ? 'bg-mucus-hf' : quality === 'less_fertile' ? 'bg-mucus-lf' : null;
+  const fill = domain ? `${domain} text-ink` : 'bg-base-100';
   const start = isCycleStart(date);
   const peak = markOf(data.value, 'mucus', date) === 'P';
   const fertile = hit ? isFertileDay(hit.cycle, date) : false;
@@ -89,22 +94,22 @@ function DayCell({ date, inMonth, now, marking, onTap }: { date: string; inMonth
   const cell = (
     <>
       <span class="flex items-start justify-between">
-        <span class="text-sm font-semibold tabular-nums">{Number(date.slice(8))}</span>
+        <span class="text-sm font-semibold tabular-nums sm:text-base">{Number(date.slice(8))}</span>
         {hit && <span class="text-[10px] tabular-nums opacity-80">{hit.day}</span>}
       </span>
-      <span class="flex flex-wrap gap-0.5">
+      <span class="flex flex-wrap items-center justify-center gap-0.5">
         {start && <span class="badge badge-xs bg-cycle-start border-0 text-white">1</span>}
         {peak && <span class="badge badge-xs bg-base-content border-0 text-base-100">P</span>}
         {readings.map((s) => (
           <SourceMarker key={s} marker={data.value.sources[s].marker} color={data.value.sources[s].color} size={9} hollow={data.value.temps[tempKey(date, s)]?.excluded} />
         ))}
       </span>
-      {fertile && <span class="absolute inset-x-0 bottom-0 h-1 bg-fertile" aria-hidden="true" />}
+      {fertile && <span class="absolute inset-x-0 bottom-0 h-1.5 bg-fertile-bar" aria-hidden="true" />}
     </>
   );
-  const classes = `relative flex aspect-square min-h-11 flex-col justify-between overflow-hidden rounded-lg border p-1 text-left ${fill} ${
+  const classes = `relative flex aspect-square min-h-11 flex-col justify-between overflow-hidden rounded-lg border p-1 text-left sm:p-1.5 ${fill} ${
     date === now ? 'border-primary border-2' : 'border-base-300'
-  } ${!inMonth || outside ? 'opacity-50' : ''}`;
+  } ${!inMonth ? 'opacity-35' : outside ? 'opacity-50' : ''}`;
   if (marking) {
     return (
       <button type="button" class={classes} onClick={onTap} aria-label={formatDate(date, 'long')}>
@@ -127,7 +132,7 @@ function Legend() {
       <p class="flex items-center gap-2"><span class="badge badge-xs bg-base-content border-0" />{t('calendar.legendPeak')}</p>
       <p class="flex items-center gap-2"><span class="h-3 w-6 rounded bg-mucus-hf" />{t('calendar.legendHighlyFertile')}</p>
       <p class="flex items-center gap-2"><span class="h-3 w-6 rounded bg-mucus-lf" />{t('calendar.legendLessFertile')}</p>
-      <p class="flex items-center gap-2"><span class="h-1 w-6 bg-fertile" />{t('calendar.legendFertile')}</p>
+      <p class="flex items-center gap-2"><span class="h-1.5 w-6 bg-fertile-bar" />{t('calendar.legendFertile')}</p>
       <p class="flex items-center gap-2"><SourceMarker marker="circle" color="#334155" size={12} />{t('calendar.legendReading')}</p>
     </section>
   );
