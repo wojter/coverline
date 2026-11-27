@@ -74,8 +74,10 @@ function CycleScreen({ cycle, today: now }: { cycle: Cycle; today: string }) {
     const frame = requestAnimationFrame(() => {
       const scroller = scrollRef.current?.querySelector<HTMLElement>('[data-chart-scroll]');
       if (!scroller) return;
+      // Today sits near the right edge, so the latest readings are in view rather than empty days.
+      const column = Number(scroller.dataset.columnWidth) || CHART.columnWidth;
       const today = daysBetween(cycle.start, now);
-      scroller.scrollLeft = Math.max(0, today * CHART.columnWidth + CHART.columnWidth / 2 - scroller.clientWidth / 2);
+      scroller.scrollLeft = Math.max(0, (today + 2) * column - scroller.clientWidth);
     });
     return () => cancelAnimationFrame(frame);
   }, [cycle.id, now]);
@@ -164,7 +166,7 @@ function CycleScreen({ cycle, today: now }: { cycle: Cycle; today: string }) {
         })}
       </div>
 
-      <section class="card rounded-box border border-base-300 bg-base-100 p-2 print:hidden" ref={scrollRef}>
+      <section class="card -mx-3 rounded-box border border-base-300 bg-base-100 p-1 sm:mx-0 sm:p-2 lg:mx-[calc(50%-50vw+1.5rem)] print:hidden" ref={scrollRef}>
         <Chart cycle={cycle} data={chartData} today={now} visible={visible} mode="screen" onGridTap={onGridTap} />
       </section>
 

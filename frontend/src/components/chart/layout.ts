@@ -6,6 +6,10 @@ export const CHART = {
   columnWidth: 26,
   labelWidth: 148,
   groupHeaderWidth: 20,
+  compactLabelWidth: 122,
+  compactGroupHeaderWidth: 16,
+  compactBelow: 640,
+  maxZoom: 1.6,
   tempStep: 11,
   tempStepValue: 5,
   tempMargin: 10,
@@ -17,6 +21,12 @@ export const CHART = {
   lightTint: 0.14,
   darkTint: 0.28,
 } as const;
+
+// Screen zoom: 1 when the chart scrolls, up to maxZoom when there is room to spare.
+export function chartZoom(available: number, natural: number): number {
+  if (available <= 0 || natural <= 0) return 1;
+  return Math.min(Math.max(available / natural, 1), CHART.maxZoom);
+}
 
 export interface Reading {
   value: number;

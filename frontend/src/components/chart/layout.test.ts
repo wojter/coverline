@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   CHART,
   chartDays,
+  chartZoom,
   columnCenter,
   curveSegments,
   mucusRowMatch,
@@ -124,5 +125,17 @@ describe('notes', () => {
 
   it('allows more characters on a taller grid', () => {
     expect(noteCharLimit(300)).toBeGreaterThan(noteCharLimit(100));
+  });
+});
+
+describe('chartZoom', () => {
+  it('keeps natural size when the chart has to scroll', () => {
+    expect(chartZoom(400, 1188)).toBe(1);
+    expect(chartZoom(0, 1188)).toBe(1);
+  });
+
+  it('scales up to fill the available width, capped at maxZoom', () => {
+    expect(chartZoom(1188 * 1.25, 1188)).toBeCloseTo(1.25);
+    expect(chartZoom(5000, 1188)).toBe(CHART.maxZoom);
   });
 });

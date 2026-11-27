@@ -1,4 +1,6 @@
-import { CHART, chartDays, chartHeight, columnCenter, curveSegments, mucusRowMatch, noteCharLimit, rowLayout, rowTint, tempBands, tempTicks, tempY, temperatureScale, truncateNote, valueAtY, type Reading, type RowKey, type TempScale } from './layout';
+import type { JSX } from 'preact';
+import { useLayoutEffect, useRef, useState } from 'preact/hooks';
+import { CHART, chartDays, chartZoom, chartHeight, columnCenter, curveSegments, mucusRowMatch, noteCharLimit, rowLayout, rowTint, tempBands, tempTicks, tempY, temperatureScale, truncateNote, valueAtY, type Reading, type RowKey, type TempScale } from './layout';
 import { isFertileDay, type Cycle } from '../../domain/cycles';
 import { SOURCE_IDS, type DayRow, type Marker, type SourceId, type SourceRow, type TempRow } from '../../domain/types';
 import { formatTemp, t } from '../../i18n';
@@ -88,23 +90,52 @@ export function labelFor(row: RowKey): string {
 
 export function Chart(props: ChartProps) {
   const model = buildModel(props);
-  const labels = <LabelsLayer model={model} props={props} />;
   const grid = <GridLayer model={model} props={props} />;
   if (props.mode === 'print') {
     return (
       <svg viewBox={`0 0 ${CHART.labelWidth + model.width} ${model.height}`} width="100%" class="block" role="img" aria-label={t('chart.title')}>
-        {labels}
+        <LabelsLayer model={model} />
         <g transform={`translate(${CHART.labelWidth} 0)`}>{grid}</g>
       </svg>
     );
   }
+  return <ScreenChart model={model} props={props} grid={grid} />;
+}
+
+interface LabelBox {
+  width: number;
+  group: number;
+  rowFont: number;
+  tickFont: number;
+}
+
+const FULL_LABELS: LabelBox = { width: CHART.labelWidth, group: CHART.groupHeaderWidth, rowFont: 9.5, tickFont: 8.5 };
+const COMPACT_LABELS: LabelBox = { width: CHART.compactLabelWidth, group: CHART.compactGroupHeaderWidth, rowFont: 8.5, tickFont: 8 };
+
+const MUCUS_GROUP_KEYS: ReadonlySet<RowKey> = new Set(['wet', 'stretchy', 'clear', 'moist', 'sticky', 'cloudy', 'dry']);
+
+// Narrow screens get the compact label column. Wide screens scale the whole chart up to the
+// available width (at most CHART.maxZoom), so the cycle fits without scrolling.
+function ScreenChart({ model, props, grid }: { model: Model; props: ChartProps; grid: JSX.Element }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [available, setAvailable] = useState(0);
+  useLayoutEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+    const observer = new ResizeObserver(() => setAvailable(element.clientWidth));
+    observer.observe(element);
+    setAvailable(element.clientWidth);
+    return () => observer.disconnect();
+  }, []);
+  const box = available > 0 && available < CHART.compactBelow ? COMPACT_LABELS : FULL_LABELS;
+  const zoom = chartZoom(available, box.width + model.width);
   return (
-    <div class="flex">
-      <svg width={CHART.labelWidth} height={model.height} class="shrink-0" aria-hidden="true">
-        {labels}
+    <div class="flex" ref={ref}>
+      <svg viewBox={`0 0 ${box.width} ${model.height}`} width={box.width * zoom} height={model.height * zoom} class="shrink-0" aria-hidden="true">
+        <LabelsLayer model={model} box={box} />
       </svg>
-      <div class="min-w-0 flex-1 overflow-x-auto" data-chart-scroll>
-        <svg width={model.width} height={model.height} class="block" role="img" aria-label={t('chart.title')} onClick={(event) => handleTap(event, model, props)}>
+      <div class="min-w-0 flex-1 overflow-x-auto" data-chart-scroll data-column-width={CHART.columnWidth * zoom}>
+        <svg viewBox={`0 0 ${model.width} ${model.height}`} width={model.width * zoom} height={model.height * zoom} class="block" role="img" aria-label={t('chart.title')} onClick={(event) => handleTap(event, model, props)}>
           {grid}
         </svg>
       </div>
@@ -112,13 +143,11 @@ export function Chart(props: ChartProps) {
   );
 }
 
-const MUCUS_GROUP_KEYS: ReadonlySet<RowKey> = new Set(['wet', 'stretchy', 'clear', 'moist', 'sticky', 'cloudy', 'dry']);
-
-function LabelsLayer({ model }: { model: Model; props: ChartProps }) {
+function LabelsLayer({ model, box = FULL_LABELS }: { model: Model; box?: LabelBox }) {
   const tempTop = rowTop(model, 'temp');
   const tempH = model.rows.find((row) => row.key === 'temp')?.height ?? 0;
-  const scaleLeft = CHART.groupHeaderWidth;
-  const scaleWidth = CHART.labelWidth - scaleLeft;
+  const scaleLeft = box.group;
+  const scaleWidth = box.width - scaleLeft;
   const mucusTop = rowTop(model, 'wet');
   const mucusH = 7 * CHART.symbolRow;
   return (
@@ -127,22 +156,22 @@ function LabelsLayer({ model }: { model: Model; props: ChartProps }) {
       {tempBands(model.scale).map((band) => (
         <rect key={`band-${band.y}`} x={scaleLeft} y={tempTop + band.y} width={scaleWidth} height={band.height} class="fill-base-content" fill-opacity={CHART.lightTint} />
       ))}
-      <rect x="0" y={mucusTop} width={CHART.groupHeaderWidth} height={mucusH} class="fill-base-content" fill-opacity={CHART.lightTint} />
-      <RowTints model={model} width={CHART.labelWidth} mucusOffset={CHART.groupHeaderWidth} />
+      <rect x="0" y={mucusTop} width={box.group} height={mucusH} class="fill-base-content" fill-opacity={CHART.lightTint} />
+      <RowTints model={model} width={box.width} mucusOffset={box.group} />
       {tempTicks(model.scale)
         .filter((tick) => tick.top > 0)
         .map((tick) => (
-          <line key={`ltick-${tick.value}`} x1={scaleLeft} x2={CHART.labelWidth} y1={tempTop + tick.top} y2={tempTop + tick.top} stroke="var(--color-base-content)" stroke-opacity="0.35" stroke-width="0.75" />
+          <line key={`ltick-${tick.value}`} x1={scaleLeft} x2={box.width} y1={tempTop + tick.top} y2={tempTop + tick.top} stroke="var(--color-base-content)" stroke-opacity="0.35" stroke-width="0.75" />
         ))}
       <line x1={scaleLeft} x2={scaleLeft} y1={tempTop} y2={tempTop + tempH} stroke="var(--color-base-content)" stroke-opacity="0.45" stroke-width="0.75" />
-      <line x1={CHART.groupHeaderWidth} x2={CHART.groupHeaderWidth} y1={mucusTop} y2={mucusTop + mucusH} stroke="var(--color-base-content)" stroke-opacity="0.45" stroke-width="0.75" />
-      <RowLines model={model} width={CHART.labelWidth} mucusOffset={CHART.groupHeaderWidth} />
+      <line x1={box.group} x2={box.group} y1={mucusTop} y2={mucusTop + mucusH} stroke="var(--color-base-content)" stroke-opacity="0.45" stroke-width="0.75" />
+      <RowLines model={model} width={box.width} mucusOffset={box.group} />
       <line x1="0.5" x2="0.5" y1="0" y2={model.height} stroke="var(--color-base-content)" stroke-opacity="0.5" stroke-width="1" />
-      <line x1={CHART.labelWidth - 0.5} x2={CHART.labelWidth - 0.5} y1="0" y2={model.height} stroke="var(--color-base-content)" stroke-opacity="0.5" stroke-width="1" />
+      <line x1={box.width - 0.5} x2={box.width - 0.5} y1="0" y2={model.height} stroke="var(--color-base-content)" stroke-opacity="0.5" stroke-width="1" />
       <text transform={`translate(${scaleLeft / 2} ${tempTop + tempH / 2}) rotate(-90)`} text-anchor="middle" dominant-baseline="middle" class="text-[10px] font-bold tracking-wider uppercase">
         {labelFor('temp')}
       </text>
-      <text transform={`translate(${CHART.groupHeaderWidth / 2} ${mucusTop + mucusH / 2}) rotate(-90)`} text-anchor="middle" dominant-baseline="middle" class="text-[10px] font-bold tracking-wider uppercase">
+      <text transform={`translate(${box.group / 2} ${mucusTop + mucusH / 2}) rotate(-90)`} text-anchor="middle" dominant-baseline="middle" class="text-[10px] font-bold tracking-wider uppercase">
         {t('chart.track.mucus')}
       </text>
       {model.rows
@@ -150,9 +179,9 @@ function LabelsLayer({ model }: { model: Model; props: ChartProps }) {
         .map((row) => {
           const y = row.y + row.height / 2;
           const bold = row.key === 'cycleDay' || row.key === 'peak' || row.key === 'fertile';
-          const x = MUCUS_GROUP_KEYS.has(row.key) ? CHART.groupHeaderWidth + 5 : 6;
+          const x = MUCUS_GROUP_KEYS.has(row.key) ? box.group + 5 : 6;
           return (
-            <text key={row.key} x={x} y={y} dominant-baseline="middle" class={`text-[9.5px] ${bold ? 'font-bold' : 'font-medium'}`}>
+            <text key={row.key} x={x} y={y} dominant-baseline="middle" font-size={box.rowFont} class={bold ? 'font-bold' : 'font-medium'}>
               {labelFor(row.key)}
             </text>
           );
@@ -160,7 +189,7 @@ function LabelsLayer({ model }: { model: Model; props: ChartProps }) {
       {tempTicks(model.scale)
         .filter((tick) => tick.labelled)
         .map((tick) => (
-          <text key={tick.value} x={scaleLeft + scaleWidth / 2} y={tempTop + tick.center} text-anchor="middle" dominant-baseline="middle" class="text-[8.5px] font-medium opacity-90 tabular-nums">
+          <text key={tick.value} x={scaleLeft + scaleWidth / 2} y={tempTop + tick.center} text-anchor="middle" dominant-baseline="middle" font-size={box.tickFont} class="font-medium opacity-90 tabular-nums">
             {formatTemp(tick.value)}
           </text>
         ))}
@@ -221,8 +250,9 @@ function handleTap(event: MouseEvent, model: Model, props: ChartProps) {
   if (!props.onGridTap) return;
   const svg = event.currentTarget as SVGSVGElement;
   const box = svg.getBoundingClientRect();
-  const x = event.clientX - box.left;
-  const y = event.clientY - box.top;
+  const zoom = box.width / model.width;
+  const x = (event.clientX - box.left) / zoom;
+  const y = (event.clientY - box.top) / zoom;
   const index = Math.floor(x / CHART.columnWidth);
   const date = model.columns[index];
   if (!date) return;
