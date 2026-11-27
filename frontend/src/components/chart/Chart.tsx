@@ -115,26 +115,31 @@ const COMPACT_LABELS: LabelBox = { width: CHART.compactLabelWidth, group: CHART.
 const MUCUS_GROUP_KEYS: ReadonlySet<RowKey> = new Set(['wet', 'stretchy', 'clear', 'moist', 'sticky', 'cloudy', 'dry']);
 
 // Narrow screens get the compact label column. Wide screens scale the whole chart up to the
-// available width (at most CHART.maxZoom), so the cycle fits without scrolling.
+// available width and window height (at most CHART.maxZoom), so the cycle fits without scrolling.
 function ScreenChart({ model, props, grid }: { model: Model; props: ChartProps; grid: JSX.Element }) {
   const ref = useRef<HTMLDivElement>(null);
-  const [available, setAvailable] = useState(0);
+  const [available, setAvailable] = useState({ width: 0, height: 0 });
   useLayoutEffect(() => {
     const element = ref.current;
     if (!element) return;
-    const observer = new ResizeObserver(() => setAvailable(element.clientWidth));
+    const measure = () => setAvailable({ width: element.clientWidth, height: window.innerHeight - CHART.screenMargin });
+    const observer = new ResizeObserver(measure);
     observer.observe(element);
-    setAvailable(element.clientWidth);
-    return () => observer.disconnect();
+    window.addEventListener('resize', measure);
+    measure();
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', measure);
+    };
   }, []);
-  const box = available > 0 && available < CHART.compactBelow ? COMPACT_LABELS : FULL_LABELS;
-  const zoom = chartZoom(available, box.width + model.width);
+  const box = available.width > 0 && available.width < CHART.compactBelow ? COMPACT_LABELS : FULL_LABELS;
+  const zoom = chartZoom(available, { width: box.width + model.width, height: model.height });
   return (
-    <div class="flex" ref={ref}>
+    <div class="flex justify-center" ref={ref}>
       <svg viewBox={`0 0 ${box.width} ${model.height}`} width={box.width * zoom} height={model.height * zoom} class="shrink-0" aria-hidden="true">
         <LabelsLayer model={model} box={box} />
       </svg>
-      <div class="min-w-0 flex-1 overflow-x-auto" data-chart-scroll data-column-width={CHART.columnWidth * zoom}>
+      <div class="min-w-0 overflow-x-auto" data-chart-scroll data-column-width={CHART.columnWidth * zoom}>
         <svg viewBox={`0 0 ${model.width} ${model.height}`} width={model.width * zoom} height={model.height * zoom} class="block" role="img" aria-label={t('chart.title')} onClick={(event) => handleTap(event, model, props)}>
           {grid}
         </svg>

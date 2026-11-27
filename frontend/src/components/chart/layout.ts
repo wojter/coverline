@@ -10,6 +10,7 @@ export const CHART = {
   compactGroupHeaderWidth: 16,
   compactBelow: 640,
   maxZoom: 1.6,
+  screenMargin: 24,
   tempStep: 11,
   tempStepValue: 5,
   tempMargin: 10,
@@ -22,10 +23,17 @@ export const CHART = {
   darkTint: 0.28,
 } as const;
 
+export interface Size {
+  width: number;
+  height: number;
+}
+
 // Screen zoom: 1 when the chart scrolls, up to maxZoom when there is room to spare.
-export function chartZoom(available: number, natural: number): number {
-  if (available <= 0 || natural <= 0) return 1;
-  return Math.min(Math.max(available / natural, 1), CHART.maxZoom);
+// The height limit keeps the whole grid on screen on wide but short windows.
+export function chartZoom(available: Size, natural: Size): number {
+  if (available.width <= 0 || natural.width <= 0 || natural.height <= 0) return 1;
+  const fit = Math.min(available.width / natural.width, available.height / natural.height);
+  return Math.min(Math.max(fit, 1), CHART.maxZoom);
 }
 
 export interface Reading {

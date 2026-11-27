@@ -129,13 +129,20 @@ describe('notes', () => {
 });
 
 describe('chartZoom', () => {
+  const natural = { width: 1188, height: 625 };
+
   it('keeps natural size when the chart has to scroll', () => {
-    expect(chartZoom(400, 1188)).toBe(1);
-    expect(chartZoom(0, 1188)).toBe(1);
+    expect(chartZoom({ width: 400, height: 2000 }, natural)).toBe(1);
+    expect(chartZoom({ width: 0, height: 0 }, natural)).toBe(1);
   });
 
   it('scales up to fill the available width, capped at maxZoom', () => {
-    expect(chartZoom(1188 * 1.25, 1188)).toBeCloseTo(1.25);
-    expect(chartZoom(5000, 1188)).toBe(CHART.maxZoom);
+    expect(chartZoom({ width: 1188 * 1.25, height: 2000 }, natural)).toBeCloseTo(1.25);
+    expect(chartZoom({ width: 5000, height: 5000 }, natural)).toBe(CHART.maxZoom);
+  });
+
+  it('never grows taller than the window', () => {
+    expect(chartZoom({ width: 1188 * 1.5, height: 625 * 1.1 }, natural)).toBeCloseTo(1.1);
+    expect(chartZoom({ width: 1188 * 1.5, height: 500 }, natural)).toBe(1);
   });
 });
