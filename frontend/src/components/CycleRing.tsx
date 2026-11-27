@@ -24,7 +24,8 @@ function point(fraction: number): { x: number; y: number } {
   return { x: CENTER + RADIUS * Math.cos(angle), y: CENTER + RADIUS * Math.sin(angle) };
 }
 
-function arcPath(from: number, to: number): string {
+export function arcPath(from: number, to: number): string {
+  if (to - from >= 1) return `${arcPath(from, from + 0.5)} ${arcPath(from + 0.5, to)}`;
   const a = point(from);
   const b = point(to);
   const large = to - from > 0.5 ? 1 : 0;
