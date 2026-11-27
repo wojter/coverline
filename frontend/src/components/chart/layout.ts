@@ -9,7 +9,7 @@ export const CHART = {
   compactLabelWidth: 122,
   compactGroupHeaderWidth: 16,
   compactBelow: 640,
-  maxZoom: 1.6,
+  maxZoom: 1.25,
   screenMargin: 24,
   tempStep: 11,
   tempStepValue: 5,
