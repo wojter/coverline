@@ -16,6 +16,7 @@ interface TempInputProps {
   onExclude: (excluded: boolean) => void;
   onClear: () => void;
   onEnter?: () => void;
+  onCommit: () => void;
   inputRef?: Ref<HTMLInputElement>;
 }
 
@@ -46,11 +47,12 @@ export function TempInput(props: TempInputProps) {
           class="input input-lg min-h-12 w-full text-3xl tabular-nums placeholder:text-base-content/30"
           value={text}
           onInput={(event) => props.onText((event.target as HTMLInputElement).value)}
+          onBlur={props.onCommit}
           onKeyDown={(event) => {
-            if (event.key === 'Enter' && props.onEnter) {
-              event.preventDefault();
-              props.onEnter();
-            }
+            if (event.key !== 'Enter') return;
+            event.preventDefault();
+            if (props.onEnter) props.onEnter();
+            else (event.target as HTMLInputElement).blur();
           }}
         />
         <button

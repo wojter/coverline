@@ -43,6 +43,7 @@ export function DayForm({ draft, variant, day1 }: { draft: DayDraft; variant: 'f
               onText={(text) => draft.setTemp(source, { text, clear: false })}
               onExclude={(excluded) => draft.setTemp(source, { excluded })}
               onClear={() => draft.clearTemp(source)}
+              onCommit={() => void draft.commit()}
               onEnter={source === '1' ? () => secondRef.current?.focus() : undefined}
               inputRef={source === '2' ? secondRef : undefined}
             />
@@ -183,14 +184,15 @@ function NotesSection({ draft }: { draft: DayDraft }) {
           value={note}
           onInput={(event) => {
             const value = [...(event.target as HTMLInputElement).value].slice(0, LENGTH_LIMIT).join('');
-            draft.setField('chart_note', value);
+            draft.typeField('chart_note', value);
           }}
+          onBlur={() => void draft.commit()}
         />
         <span class="self-end text-xs tabular-nums opacity-70">{t('components.dayForm.counter', { count: length, max: LENGTH_LIMIT })}</span>
       </label>
       <label class="flex flex-col gap-1">
         <span class="text-sm font-semibold">{t('field.notes')}</span>
-        <textarea class="textarea w-full" rows={3} value={draft.day.notes ?? ''} onInput={(event) => draft.setField('notes', (event.target as HTMLTextAreaElement).value)} />
+        <textarea class="textarea w-full" rows={3} value={draft.day.notes ?? ''} onInput={(event) => draft.typeField('notes', (event.target as HTMLTextAreaElement).value)} onBlur={() => void draft.commit()} />
       </label>
     </section>
   );

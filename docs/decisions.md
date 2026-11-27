@@ -190,3 +190,14 @@ Where the spec leaves room, it is read as follows:
   - `connect()` stores the token only after `/api/me` accepts it, or when the server cannot be reached (offline). A refused token is never stored, so the screen stays mounted with the error.
   - Disconnect keeps the local data and outbox in IndexedDB. Connecting again syncs them.
 - **Why:** an unconnected install showed the full empty app, which looked usable while nothing could sync. Replaces "Without a token, the app works locally" in architecture 3.
+
+## D24. Day forms save on their own
+
+- **Status:** proposed
+- **Decision:**
+  - F1 and F2 save without the Save button. A chip, toggle or mark saves as soon as it is tapped. A temperature saves when its field loses focus or on Enter, never while typing (`364` would otherwise be stored as 36.40 on the way to `3645`).
+  - Any input still unsaved is saved when the form unmounts (other view, other day in F2) and when the page becomes hidden (`visibilitychange`).
+  - Valid parts are saved even if one temperature is invalid. The invalid text stays in the form with its message and is not sent.
+  - The sticky Save bar stays (spec F1 "Save, with sync status"). It saves at once whatever is still being typed and shows the status.
+  - Each autosave is a normal `save()` call: one op batch, one history snapshot per changed row (S4.1), and one sync request, merged by the in-flight sync.
+- **Why:** the owner lost entries by forgetting to press Save. Spec 4.1 says an entry is never lost.
