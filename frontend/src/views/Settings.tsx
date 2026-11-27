@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { Check } from 'lucide-preact';
 import { Heading } from '../components/Heading';
 import { SourceMarker } from '../components/SourceMarker';
 import { PillChoice } from '../components/Chips';
@@ -21,11 +22,13 @@ export default function Settings() {
     <div class="flex flex-col gap-4">
       <Heading title={t('settings.title')} />
       <SourcesCard />
-      <LanguageCard />
-      <ThemeCard />
-      <CycleCard />
-      <DataCard />
-      <ConnectionCard />
+      <div class="flex flex-col gap-4 lg:block lg:columns-2 lg:gap-4 lg:[&>*]:mb-4 lg:[&>*]:break-inside-avoid">
+        <LanguageCard />
+        <ThemeCard />
+        <CycleCard />
+        <DataCard />
+        <ConnectionCard />
+      </div>
     </div>
   );
 }
@@ -42,9 +45,11 @@ function Card({ title, children }: { title: string; children: preact.ComponentCh
 function SourcesCard() {
   return (
     <Card title={t('settings.sources.title')}>
-      {SOURCE_IDS.map((id) => (
-        <SourceEditor key={id} id={id} />
-      ))}
+      <div class="grid gap-3 md:grid-cols-2">
+        {SOURCE_IDS.map((id) => (
+          <SourceEditor key={id} id={id} />
+        ))}
+      </div>
     </Card>
   );
 }
@@ -97,7 +102,9 @@ function SourceEditor({ id }: { id: SourceId }) {
       <FieldGroup title={t('settings.sources.colour')}>
         <div class="flex flex-wrap gap-2" role="group" aria-label={t('settings.sources.colour')}>
           {SOURCE_SWATCHES.map((color) => (
-            <button key={color} type="button" aria-label={color} aria-pressed={row.color === color} class={`h-11 w-11 rounded-full border-2 ${row.color === color ? 'border-base-content' : 'border-base-300'}`} style={{ backgroundColor: color }} onClick={() => put({ color })} />
+            <button key={color} type="button" aria-label={color} aria-pressed={row.color === color} class={`flex h-11 w-11 items-center justify-center rounded-full border-2 text-white ${row.color === color ? 'border-base-content' : 'border-base-300'}`} style={{ backgroundColor: color }} onClick={() => put({ color })}>
+              {row.color === color && <Check size={20} strokeWidth={3} aria-hidden="true" />}
+            </button>
           ))}
         </div>
       </FieldGroup>
@@ -111,12 +118,12 @@ function SourceEditor({ id }: { id: SourceId }) {
         />
       </FieldGroup>
       <FieldGroup title={t('settings.sources.range')}>
-        <div class="grid grid-cols-2 gap-2">
+        <div class="grid grid-cols-[1fr_1fr_auto] gap-2">
           <input type="text" inputMode="decimal" aria-label={t('settings.sources.min')} class="input w-full text-base tabular-nums" value={rangeMin} onInput={(e) => setRangeMin((e.target as HTMLInputElement).value)} />
           <input type="text" inputMode="decimal" aria-label={t('settings.sources.max')} class="input w-full text-base tabular-nums" value={rangeMax} onInput={(e) => setRangeMax((e.target as HTMLInputElement).value)} />
+          <button type="button" class="btn btn-outline min-h-11 rounded-full" onClick={applyRange}>{t('settings.sources.applyRange')}</button>
         </div>
         {rangeError && <p class="text-sm text-error">{rangeError}</p>}
-        <button type="button" class="btn btn-outline min-h-11 rounded-full self-start" onClick={applyRange}>{t('settings.sources.applyRange')}</button>
       </FieldGroup>
     </div>
   );
