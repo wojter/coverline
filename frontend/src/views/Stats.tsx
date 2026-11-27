@@ -18,8 +18,10 @@ export default function Stats() {
       <Heading title={t('nav.stats')} />
       <section class="flex flex-col gap-2">
         <h2 class="text-xs font-semibold uppercase tracking-wide opacity-70">{t('stats.totals')}</h2>
-        <Tiles label={t('stats.overall')} totals={overall} />
-        <Tiles label={t('stats.lastN', { n: data.value.settings.stats_n })} totals={lastN} />
+        <div class="grid gap-2 lg:grid-cols-2 lg:gap-4">
+          <Tiles label={t('stats.overall')} totals={overall} />
+          <Tiles label={t('stats.lastN', { n: data.value.settings.stats_n })} totals={lastN} />
+        </div>
       </section>
 
       <section class="flex flex-col gap-2">
@@ -41,39 +43,45 @@ export default function Stats() {
             </a>
           ))}
         </div>
-        <div class="hidden overflow-x-auto md:block">
-          <table class="table table-sm">
+        <div class="card hidden overflow-x-auto rounded-box border border-base-300 bg-base-100 md:block">
+          <table class="table table-sm [&_th]:align-bottom [&_th]:whitespace-normal">
             <thead>
               <tr>
-                <th>{t('stats.cycleNo')}</th>
-                <th>{t('field.cycleStart')}</th>
-                <th>{t('computed.cycleLength')}</th>
-                <th>{t('computed.lastMenstruation')}</th>
-                <th>{t('computed.mucusPeak')}</th>
-                <th>{t('field.fertileDays')}</th>
+                <th rowSpan={2}>{t('stats.cycleNo')}</th>
+                <th rowSpan={2}>{t('field.cycleStart')}</th>
+                <th rowSpan={2}>{t('computed.cycleLength')}</th>
+                <th rowSpan={2}>{t('computed.lastMenstruation')}</th>
+                <th rowSpan={2}>{t('computed.mucusPeak')}</th>
+                <th rowSpan={2}>{t('field.fertileDays')}</th>
                 {SOURCE_IDS.map((s) => (
-                  <th key={`h-${s}`}>{sourceLabel(s)} · {t('computed.thirdHighDay')}</th>
+                  <th key={`s-${s}`} colSpan={2} class="border-l border-base-300">
+                    <span class="flex items-center gap-2">
+                      <SourceMarker marker={data.value.sources[s].marker} color={data.value.sources[s].color} size={10} />
+                      {sourceLabel(s)}
+                    </span>
+                  </th>
                 ))}
-                {SOURCE_IDS.map((s) => (
-                  <th key={`l-${s}`}>{sourceLabel(s)} · {t('computed.lutealLength')}</th>
-                ))}
+              </tr>
+              <tr>
+                {SOURCE_IDS.map((s) => [
+                  <th key={`h-${s}`} class="border-l border-base-300">{t('computed.thirdHighDay')}</th>,
+                  <th key={`l-${s}`}>{t('computed.lutealLength')}</th>,
+                ])}
               </tr>
             </thead>
             <tbody>
               {rows.map(({ cycle, summary }) => (
                 <tr key={cycle.id} class={`hover ${cycle.excluded ? 'opacity-70' : ''}`}>
                   <td><a href={`/chart/${cycle.start}`} class="link">{cycle.number}</a>{cycle.excluded && <span class="badge badge-outline badge-xs ml-1">{t('stats.excluded')}</span>}</td>
-                  <td class="tabular-nums">{formatDate(cycle.start, 'short')}</td>
+                  <td class="whitespace-nowrap tabular-nums">{formatDate(cycle.start, 'short')}</td>
                   <td class="tabular-nums">{summary.length}</td>
                   <td class="tabular-nums">{summary.lastMenstruationDay ? formatDate(summary.lastMenstruationDay, 'short') : '–'}</td>
                   <td class="tabular-nums">{summary.mucusPeakCycleDay ?? '–'}</td>
-                  <td class="tabular-nums">{cycle.row.fertile_start && cycle.row.fertile_end ? `${formatDate(cycle.row.fertile_start, 'short')} – ${formatDate(cycle.row.fertile_end, 'short')}` : '–'}</td>
-                  {SOURCE_IDS.map((s) => (
-                    <td key={`t-${s}`} class="tabular-nums">{summary.thirdHighDay[s] ? formatDate(summary.thirdHighDay[s] as string, 'short') : '–'}</td>
-                  ))}
-                  {SOURCE_IDS.map((s) => (
-                    <td key={`b-${s}`} class="tabular-nums">{summary.lutealLength[s] ?? '–'}</td>
-                  ))}
+                  <td class="whitespace-nowrap tabular-nums">{cycle.row.fertile_start && cycle.row.fertile_end ? `${formatDate(cycle.row.fertile_start, 'short')} – ${formatDate(cycle.row.fertile_end, 'short')}` : '–'}</td>
+                  {SOURCE_IDS.map((s) => [
+                    <td key={`t-${s}`} class="border-l border-base-300 tabular-nums">{summary.thirdHighDay[s] ? formatDate(summary.thirdHighDay[s] as string, 'short') : '–'}</td>,
+                    <td key={`b-${s}`} class="tabular-nums">{summary.lutealLength[s] ?? '–'}</td>,
+                  ])}
                 </tr>
               ))}
             </tbody>
@@ -122,7 +130,7 @@ function Tiles({ label, totals }: { label: string; totals: ReturnType<typeof cyc
       <div class="grid grid-cols-4 gap-2">
         {cells.map(([name, value]) => (
           <div key={name} class="card flex flex-col items-center gap-1 rounded-box border border-base-300 bg-base-100 p-2">
-            <span class="text-[10px] uppercase tracking-wide opacity-70">{name}</span>
+            <span class="text-xs uppercase tracking-wide opacity-70">{name}</span>
             <span class="text-xl font-semibold tabular-nums">{value === null ? '–' : formatNumber(value, 1)}</span>
           </div>
         ))}
