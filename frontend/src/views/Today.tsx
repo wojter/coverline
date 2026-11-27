@@ -28,6 +28,8 @@ export default function Today() {
   const segments = bleedingSegments(current);
   const fertile = current && current.row.fertile_start && current.row.fertile_end ? fertileSegment(current.row.fertile_start, current.row.fertile_end, current.start) : null;
   const todayRow = draft.day;
+  const quality = todayQuality(todayRow);
+  const hasEntry = Boolean(quality || todayRow.bleeding || SOURCE_IDS.some((source) => data.value.temps[`${date}/${source}`]));
 
   function toggleDay1() {
     const next = requestDay1(date);
@@ -35,35 +37,38 @@ export default function Today() {
   }
 
   return (
-    <div class="flex flex-col gap-2 pb-44 lg:pb-28">
+    <div class="flex flex-col gap-3 pb-44 lg:pb-28">
       <Heading title={capitalise(formatDate(date, 'long'))} badge={false} compact />
       <TokenBanner />
-      <section class="card flex flex-col gap-1 rounded-box border border-base-300 bg-base-100 p-2">
-        <CycleRing compact cycleDay={dayCount} average={ringAverage(cycles.value)} intention={current?.row.intention ?? null} segments={segments} fertile={fertile} />
-      </section>
-      <div class="grid grid-cols-2 gap-3">
-        <a href="/chart" class="card flex min-h-11 flex-col gap-1 rounded-box border border-base-300 bg-base-100 p-2">
-          <span class="text-xs uppercase tracking-wide opacity-70">{t('today.cycleNo')}</span>
-          <span class="text-xl font-semibold tabular-nums">{current ? current.number : '–'}</span>
-          {current?.row.intention && <span class="text-sm">{t(`codes.intention.${current.row.intention}`)}</span>}
-        </a>
-        <a href={`/entry/${date}`} class="card flex min-h-11 flex-col gap-1 rounded-box border border-base-300 bg-base-100 p-2">
-          <span class="text-xs uppercase tracking-wide opacity-70">{t('today.today')}</span>
-          {SOURCE_IDS.map((source) => (
-            <TodayTemp key={source} date={date} source={source} />
-          ))}
-          <span class="text-sm">{todayQuality(todayRow)}</span>
-          {todayRow.bleeding && <span class="text-sm">{t(`codes.bleeding.${todayRow.bleeding}`)}</span>}
-          <span class="text-xs opacity-70">{t('today.openEntry')} ›</span>
+      <div class="grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] lg:grid-rows-[auto_auto_1fr] lg:items-start">
+        <section class="card flex flex-col gap-1 rounded-box border border-base-300 bg-base-100 p-4 lg:col-start-1">
+          <CycleRing cycleDay={dayCount} average={ringAverage(cycles.value)} intention={current?.row.intention ?? null} segments={segments} fertile={fertile} />
+        </section>
+        <div class="grid grid-cols-2 gap-3 lg:col-start-1">
+          <a href="/chart" class="card flex min-h-11 flex-col gap-1 rounded-box border border-base-300 bg-base-100 p-2">
+            <span class="text-xs uppercase tracking-wide opacity-70">{t('today.cycleNo')}</span>
+            <span class="text-xl font-semibold tabular-nums">{current ? current.number : '–'}</span>
+            {current?.row.intention && <span class="text-sm">{t(`codes.intention.${current.row.intention}`)}</span>}
+          </a>
+          <a href={`/entry/${date}`} class="card flex min-h-11 flex-col gap-1 rounded-box border border-base-300 bg-base-100 p-2">
+            <span class="text-xs uppercase tracking-wide opacity-70">{t('today.today')}</span>
+            {SOURCE_IDS.map((source) => (
+              <TodayTemp key={source} date={date} source={source} />
+            ))}
+            {quality && <span class="text-sm">{quality}</span>}
+            {todayRow.bleeding && <span class="text-sm">{t(`codes.bleeding.${todayRow.bleeding}`)}</span>}
+            {!hasEntry && <span class="text-sm opacity-60">{t('today.noEntry')}</span>}
+            <span class="mt-auto text-xs opacity-70">{t('today.openEntry')} ›</span>
+          </a>
+        </div>
+        <section class="flex flex-col gap-3 lg:col-start-2 lg:row-span-3 lg:row-start-1">
+          <h2 class="sr-only">{t('today.quickForm')}</h2>
+          <DayForm draft={draft} variant="quick" day1={{ checked: isCycleStart(date), onToggle: toggleDay1 }} />
+        </section>
+        <a href={`/entry/${date}`} class="btn btn-outline min-h-11 rounded-full self-start lg:col-start-1">
+          {t('today.fullForm')}
         </a>
       </div>
-      <section class="card flex flex-col gap-3 rounded-box border border-base-300 bg-base-100 p-2">
-        <h2 class="sr-only">{t('today.quickForm')}</h2>
-        <DayForm draft={draft} variant="quick" day1={{ checked: isCycleStart(date), onToggle: toggleDay1 }} />
-      </section>
-      <a href={`/entry/${date}`} class="btn btn-outline min-h-11 rounded-full self-start">
-        {t('today.fullForm')}
-      </a>
       <SaveBar onSave={() => void draft.save()} status={draft.status} disabled={!draft.dirty} />
       {request && <Day1Prompt request={request} onDone={() => setRequest(null)} />}
     </div>

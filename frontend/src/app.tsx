@@ -48,7 +48,7 @@ function Shell() {
   return (
     <div class="min-h-dvh bg-base-200 text-base-content">
       <TopTabs path={path} />
-      <main class="mx-auto w-full max-w-5xl px-4 pt-4 pb-28 lg:pt-20 print:p-0">
+      <main class="mx-auto w-full max-w-5xl px-4 pt-4 pb-28 lg:pt-6 print:p-0">
         <Router>
           <Route path="/" component={Today} />
           <Route path="/entry/:date" component={Entry} />

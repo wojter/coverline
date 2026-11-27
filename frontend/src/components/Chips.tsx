@@ -16,7 +16,7 @@ export function PillChoice<T extends string>({ options, value, label, onChange, 
     <div class="flex flex-wrap gap-2" role="group" aria-label={ariaLabel}>
       {options.map((option) => {
         const active = option === value;
-        const tone = active ? (activeClass?.(option) ?? 'btn-primary') : 'btn-outline';
+        const tone = active ? (activeClass?.(option) ?? 'btn-primary') : IDLE;
         return (
           <button
             key={option}
@@ -43,6 +43,8 @@ interface TileProps<T extends string> {
   ariaLabel: string;
 }
 
+const IDLE = 'border-base-300 bg-base-100 hover:border-primary';
+
 const GRID = 'grid grid-cols-2 gap-2 [&>:last-child:nth-child(odd)]:col-span-2';
 
 function Tile({ active, label, onClick }: { active: boolean; label: string; onClick: () => void }) {
@@ -50,10 +52,10 @@ function Tile({ active, label, onClick }: { active: boolean; label: string; onCl
     <button
       type="button"
       aria-pressed={active}
-      class={`btn h-auto min-h-11 justify-start rounded-box px-3 py-2 text-left font-normal ${active ? 'btn-primary' : 'btn-outline'}`}
+      class={`btn h-auto min-h-11 rounded-box px-3 py-2 text-center font-medium ${active ? 'btn-primary' : IDLE}`}
       onClick={onClick}
     >
-      {active ? <Check size={16} aria-hidden="true" class="shrink-0" /> : <span class="inline-block w-4 shrink-0" aria-hidden="true" />}
+      {active && <Check size={16} aria-hidden="true" class="shrink-0" />}
       <span>{label}</span>
     </button>
   );

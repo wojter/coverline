@@ -32,7 +32,7 @@ export function TempInput(props: TempInputProps) {
         </div>
         <label class="flex shrink-0 items-center gap-2 text-sm">
           {t('field.excludeReading')}
-          <input type="checkbox" class="toggle toggle-primary toggle-sm" checked={excluded} disabled={!hasReading && text === ''} onChange={(event) => props.onExclude((event.target as HTMLInputElement).checked)} />
+          <input type="checkbox" class="toggle toggle-primary" checked={excluded} disabled={!hasReading && text === ''} onChange={(event) => props.onExclude((event.target as HTMLInputElement).checked)} />
         </label>
       </div>
       <div class="flex items-center gap-2">
@@ -43,7 +43,7 @@ export function TempInput(props: TempInputProps) {
           autoComplete="off"
           aria-label={`${name} ${t('field.temperature')}`}
           placeholder="36,50"
-          class="input input-lg min-h-12 w-full text-3xl tabular-nums"
+          class="input input-lg min-h-12 w-full text-3xl tabular-nums placeholder:text-base-content/30"
           value={text}
           onInput={(event) => props.onText((event.target as HTMLInputElement).value)}
           onKeyDown={(event) => {
